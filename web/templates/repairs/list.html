@@ -1,0 +1,143 @@
+{% extends "layout/base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block page_title %}Reparaciones{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Page title {% endcomment %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-between mg-top-30">
+
+        <div class="crancy-pbreadcrumb">
+            <h2 class="mb-3">Reparaciones registradas</h2>
+        </div>
+
+    </div>
+</div>
+
+{% comment %} Alerts {% endcomment %}
+{% if messages %}
+<div class="row mt-4">
+    <div class="col-12">
+        {% for message in messages %}
+        {% comment %} Extra tags {% endcomment %}
+            <div class="alert {{ message.tags }} d-flex align-items-center mt-5" role="alert">
+                <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17q.425 0 .713-.288T13 16t-.288-.712T12 15t-.712.288T11 16t.288.713T12 17m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/></svg>
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% comment %} Repairs list {% endcomment %}
+<div class="row">
+    <div class="col-12">
+        <div class="crancy-body">
+            <div class="crancy-dsinner">
+                <div class="crancy-table crancy-table--v3">
+
+                    {% comment %} Table {% endcomment %}
+                    <table id="crancy-table__main" class="crancy-table__main crancy-table__main-v3">
+                        
+                        <thead class="crancy-table__head">
+                            <tr>
+                                <th class="crancy-table__column-1 crancy-table__h1">ID</th>
+                                <th class="crancy-table__column-2 crancy-table__h2">Nombre</th>
+                                <th class="crancy-table__column-3 crancy-table__h3">Compañía</th>
+                                <th class="crancy-table__column-2 crancy-table__h2">Vehículo</th>
+                                <th class="crancy-table__column-4 crancy-table__h4">Fecha solicitud</th>
+                                <th class="crancy-table__column-5 crancy-table__h5">Estado</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody class="crancy-table__body" >
+                            {% for repair in repairs %}
+                            <tr onclick="window.location.href='{% url 'detail_repair' repair.id %}'" style="cursor: pointer;">
+                                <td class="crancy-table__column-1 crancy-table__data-1">
+                                    #REP-{{ repair.id }}
+                                </td>
+                                <td class="crancy-table__column-1 crancy-table__data-1">
+                                    {{ repair.title }}
+                                </td>
+                                <td class="crancy-table__column-3 crancy-table__data-3">
+                                    {{ repair.vehicle.company }}
+                                </td>
+                                <td class="crancy-table__column-2 crancy-table__data-2">
+                                    {{ repair.vehicle.license_plate }}
+                                </td>
+                                <td class="crancy-table__column-3 crancy-table__data-3">
+                                    {{ repair.start_date | date:"d/m/Y" }}
+                                </td>
+                                <td class="crancy-table__column-4 crancy-table__data-4">
+                                    <span class="crancy-table__product-title badge {% if repair.status == 'Pendiente' %}bg-warning{% elif repair.status == 'Finalizada' %}bg-success{% elif repair.status == 'En progreso' %}bg-info{% elif repair.status == 'Sin comenzar' %}bg-secondary{% endif %}">
+                                        {{ repair.status }}
+                                    </span>
+                                </td>
+                            </tr>
+
+                            {% empty %}
+                            <tr>
+                                {% if user|has_group:"Comandante" %}
+                                <td class="crancy-table__column-1 crancy-table__data-1 text-center" colspan="7">
+                                    <h4 class="crancy-table__product-title text-center py-5">No existen solicitudes de reparación pendientes.</h4>
+                                    </h4>
+                                </td>
+                                {% else %}
+                                <td class="crancy-table__column-1 crancy-table__data-1 text-center" colspan="7">
+                                    <h4 class="crancy-table__product-title text-center py-5">No existen reparaciones registradas.</h4>
+                                    </h4>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                        <tfoot>
+                            <tr class="p-0">
+                                <td class="p-0" colspan="4">
+                                    <p class="mx-4 text-start">Mostrando {{ repairs|length }} reparaciones.</p>
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function deleteRepair(id) {
+        
+        Swal.fire({
+            title: "¿Estás seguro de eliminar esta reparación?",
+            text: "No podrás revertir esta acción.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Eliminar"
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                window.location.href = `{% url "remove_repair" 0 %}`.replace('0', id);
+            }
+
+        });
+
+    }
+
+</script>
+
+
+{% endblock main_content %}

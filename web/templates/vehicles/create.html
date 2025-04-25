@@ -1,0 +1,208 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block page_title %}Vehículos{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Page title {% endcomment %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-between mg-top-30">
+
+        <div class="crancy-pbreadcrumb">
+            <h2 class="mb-3">Datos generales</h2>
+        </div>
+
+    </div>
+</div>
+
+{% comment %} Alert no companies {% endcomment %}
+{% if not companies %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-warning d-flex align-items-center mt-5 mb-0" role="alert">
+            <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17q.425 0 .713-.288T13 16t-.288-.712T12 15t-.712.288T11 16t.288.713T12 17m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/></svg>
+            <div>
+                ¡Atención! Debes registrar por lo menos una compañía para poder registrar nuevos vehículos.
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% comment %} Create vehicle form {% endcomment %}
+<div class="row">
+    <div class="col-12">
+        <form method="POST">
+            {% csrf_token %}
+
+            {% comment %} Data Form {% endcomment %}
+            <div class="crancy__item-group p-5">
+
+                {% comment %} Car code + Car type + Company {% endcomment %}
+                <div class="crancy__item-form--group">
+                    <div class="row">
+
+                        {% comment %} Car code {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Código Carro</label>
+                                <input class="crancy__item-input" name="txtCarCode" type="text"
+                                    maxlength="32" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Company {% endcomment %}
+                        <div class="col-lg-3 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Compañía</label>
+                                <select class="crancy__item-input" name="txtCompany" id="" required>
+                                    {% for company in companies %}
+                                    <option value="{{company.id}}">{{company}}</option>
+                                    {% empty %}
+                                    <option value="" disabled selected>No hay compañías registradas</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                         
+                        {% comment %} Car type {% endcomment %}
+                        <div class="col-lg-3 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Tipo de Carro</label>
+                                <select class="crancy__item-input" name="txtCarType" required>
+                                    <option value="Operativo">Operativo</option>
+                                    <option value="Reliquia">Reliquia</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} License Plate + Year {% endcomment %}
+                <div class="crancy__item-form--group mt-4">
+                    <div class="row">
+
+                        {% comment %} License Plate {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Patente</label>
+                                <input class="crancy__item-input" name="txtLicensePlate" type="text"
+                                    maxlength="7" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Year {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Año</label>
+                                <input class="crancy__item-input" name="txtYear" type="number"
+                                    min="1990" max="2030" required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Brand + Model + Year {% endcomment %}
+                <div class="crancy__item-form--group mt-4">
+                    <div class="row">
+
+                        {% comment %} Brand {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Marca</label>
+                                <input class="crancy__item-input" name="txtBrand" type="text"
+                                    maxlength="256" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Model {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Modelo</label>
+                                <input class="crancy__item-input" name="txtModel" type="text" maxlength="256" required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Technical inspection + Emissions inspection + Vehicle registration {% endcomment %}
+                <div class="crancy__item-form--group mt-4">
+                    <div class="row">
+
+                        {% comment %} Technical inspection {% endcomment %}
+                        <div class="col-lg-4 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Revisión técnica</label>
+                                <input class="crancy__item-input" name="txtTechnicalInspection" type="date"
+                                    required>
+                            </div>
+                        </div>
+
+                        {% comment %} Emissions inspection {% endcomment %}
+                        <div class="col-lg-4 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Revisión de gases</label>
+                                <input class="crancy__item-input" name="txtEmissionsInspection" type="date"
+                                    required>
+                            </div>
+                        </div>
+
+                        {% comment %} Vehicle registration {% endcomment %}
+                        <div class="col-lg-4 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Permiso de circulación</label>
+                                <input class="crancy__item-input" name="txtVehicleRegistration" type="date"
+                                    required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Insurance + Insurance expiration date {% endcomment %}
+                <div class="crancy__item-form--group mt-4 mb-4">
+                    <div class="row">
+
+                        {% comment %} Insurance {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Seguro</label>
+                                <input class="crancy__item-input" name="txtInsurance" type="text"
+                                    maxlength="32" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Insurance expiration date {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Fecha expiración seguro</label>
+                                <input class="crancy__item-input" name="txtInsuranceExpDate" type="date"
+                                    required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Buttons {% endcomment %}
+                <div class="d-flex justify-content-end align-items-center mt-5">
+                    <a class="d-flex justify-content-center align-items-center px-3 btn badge bg-danger me-3" href="{% url "list_vehicles" %}">Cancelar</a>
+
+                    <button class="d-flex justify-content-center align-items-center px-3 btn badge bg-success" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m9 20.42l-6.21-6.21l2.83-2.83L9 14.77l9.88-9.89l2.83 2.83z"/></svg>
+                        Registrar vehículo
+                    </button>
+                    
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock main_content %}

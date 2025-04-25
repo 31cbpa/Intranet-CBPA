@@ -1,0 +1,108 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block page_title %}Reparaciones{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Page title {% endcomment %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-between mg-top-30">
+
+        <div class="crancy-pbreadcrumb">
+            <h2 class="mb-3" >Datos generales</h2>
+        </div>
+        
+    </div>
+</div>
+
+{% comment %} Create repair form {% endcomment %}
+<div class="row">
+
+    <div class="col-12">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% comment %} Data Form {% endcomment %}
+            <div class="crancy__item-group p-5">
+
+                <div class="text-dark d-flex justify-content-start align-items-start mb-3">
+
+                    <svg class="text-info me-3" xmlns="http://www.w3.org/2000/svg" width="4em" height="4em" viewBox="0 0 24 24"><path fill="currentColor" d="M11 17h2v-6h-2zm1-8q.425 0 .713-.288T13 8t-.288-.712T12 7t-.712.288T11 8t.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"/></svg>
+
+                    Rellena el siguiente formulario para solicitar una reparación en el vehículo seleccionado. Una vez enviada la solicitud, esta será revisada por la persona encargada y podrá ser aprobada o rechazada. Una vez aprobada la solicitud, el equipo del taller mecánico podrá proceder con la reparación del vehículo. En caso de ser rechazada, se indicará el motivo de rechazo y se podrá volver a enviar otra solicitud con la información corregida.
+
+                </div>
+
+                <hr class="mb-5 mt-4">
+
+                {% comment %} Car {% endcomment %}
+                <div class="crancy__item-form--group">
+                    <div class="row">
+                        <div class="col-lg-12 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Vehículo a reparar</label>
+                                <input class="crancy__item-input" value="{{ vehicle.license_plate }}" type="text"
+                                    disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% comment %} Title {% endcomment %}
+                <div class="crancy__item-form--group mt-4">
+                    <div class="row">
+                        <div class="col-lg-12 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Nombre de la reparación</label>
+                                <input class="crancy__item-input" name="txtRepairName" type="text"
+                                    maxlength="256" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% comment %} Comments {% endcomment %}
+                <div class="crancy__item-form--group mt-4">
+                    <div class="row">
+                        <div class="col-lg-12 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Observaciones / comentarios</label>
+                                <textarea class="form-control" rows="5" name="txtRepairComments" id="txtRepairComments" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% comment %} Attachments {% endcomment %}
+                <div class="crancy__item-form--group mt-4 mb-4">
+                    <div class="row">
+                        <div class="col-lg-12 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Archivos adjuntos</label>
+                                <input type="file" name="fileAttachments" id="fileAttachments" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% comment %} Buttons {% endcomment %}
+                <div class="d-flex justify-content-end align-items-center mt-5">
+
+                    <a class="d-flex justify-content-center align-items-center px-3 btn badge bg-danger me-3" href="{% url "detail_vehicle" vehicle.id %}">Cancelar</a>
+
+                    <button class="d-flex justify-content-center align-items-center px-3 btn badge bg-success" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m9 20.42l-6.21-6.21l2.83-2.83L9 14.77l9.88-9.89l2.83 2.83z"/></svg>
+                        Enviar solicitud
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock main_content %}

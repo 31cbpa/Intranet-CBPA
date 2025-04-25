@@ -1,0 +1,230 @@
+{% extends "layout/base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block page_title %}Inicio{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Welcome {% endcomment %}
+<div class="row">
+    <div class="col-12 mg-top-30">
+        <div class="crancy-pbreadcrumb">
+            <h2>¡Bienvenido/a, {{ request.user.first_name }}!</h2>
+        </div>
+    </div>
+</div>
+
+{% comment %} Counters {% endcomment %}
+<div class="row mt-4">
+
+    <div class="col-6">
+        <div class="crancy-history crancy-history--ticket h-100">
+            <div class="crancy-history__main">
+                <div class="crancy-history__content mb-0">
+                    <h4 class="crancy-history__number ms-3">
+                        {{ companies_count }}
+                        <span>Compañías</span>
+                    </h4>
+                    <div class="crancy-history__icon crancy-color1__opacity--bg me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M18 15h-2v2h2m0-6h-2v2h2m2 6h-8v-2h2v-2h-2v-2h2v-2h-2V9h8M10 7H8V5h2m0 6H8V9h2m0 6H8v-2h2m0 6H8v-2h2M6 7H4V5h2m0 6H4V9h2m0 6H4v-2h2m0 6H4v-2h2m6-10V3H2v18h20V7z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6">
+        <div class="crancy-history crancy-history--ticket h-100">
+            <div class="crancy-history__main">
+                <div class="crancy-history__content mb-0">
+                    <h4 class="crancy-history__number ms-3">
+                        {{ vehicles_count }}
+                        <span>Vehículos</span>
+                    </h4>
+                    <div class="crancy-history__icon crancy-color2__opacity--bg me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-1.25 0-2.125-.875T4 18H3q-.825 0-1.412-.587T1 16v-5h11V7q0-.825.588-1.412T14 5h2V4q0-.425.288-.712T17 3h1q.425 0 .713.288T19 4v1h.55q.65 0 1.175.375t.725 1l1.45 4.3q.05.15.075.313t.025.337V18h-3q0 1.25-.875 2.125T17 21t-2.125-.875T14 18h-4q0 1.25-.875 2.125T7 21m0-2q.425 0 .713-.288T8 18t-.288-.712T7 17t-.712.288T6 18t.288.713T7 19m10 0q.425 0 .713-.288T18 18t-.288-.712T17 17t-.712.288T16 18t.288.713T17 19m-3-8h6.9l-1.35-4H14zM1 10V8.5h1v-2H1V5h10v1.5h-1v2h1V10zm2.5-1.5h1.75v-2H3.5zm3.25 0H8.5v-2H6.75z"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4 mt-4">
+        <div class="crancy-history crancy-history--ticket h-100">
+            <div class="crancy-history__main">
+                <div class="crancy-history__content mb-0">
+                    <h4 class="crancy-history__number ms-3">
+                        {{ repairs_count }}
+                        <span>Reparaciones</span>
+                    </h4>
+                    <div class="crancy-history__icon crancy-color3__opacity--bg me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M20.96 16.45c.01-.15.04-.3.04-.45v.5zM11 16c0 .71.15 1.39.42 2H6v1c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1v-8l2.08-6c.2-.58.76-1 1.42-1h11c.66 0 1.22.42 1.42 1L21 11v5c0-2.76-2.24-5-5-5s-5 2.24-5 5m-3-2.5c0-.83-.67-1.5-1.5-1.5S5 12.67 5 13.5S5.67 15 6.5 15S8 14.33 8 13.5M19 10l-1.5-4.5h-11L5 10zm3.87 11.19l-4.11-4.11c.41-1.04.18-2.26-.68-3.11c-.9-.91-2.25-1.09-3.34-.59l1.94 1.94l-1.35 1.36l-1.99-1.95c-.54 1.09-.29 2.44.59 3.35a2.91 2.91 0 0 0 3.12.68l4.11 4.1c.18.19.45.19.63 0l1.04-1.03c.22-.18.22-.5.04-.64"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4 mt-4">
+        <div class="crancy-history crancy-history--ticket h-100">
+            <div class="crancy-history__main">
+                <div class="crancy-history__content mb-0">
+                    <h4 class="crancy-history__number ms-3">
+                        {{ parts_count }}
+                        <span>Repuestos comprados</span>
+                    </h4>
+                    <div class="crancy-history__icon crancy-color4__opacity--bg me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><path fill="currentColor" d="m241.406 21l-15.22 34.75a182 182 0 0 0-23.467 2.97l-23.282-30.064l-25.094 8.532l-.125 38.25c-10.63 5.464-20.817 12.07-30.44 19.78L88.313 79.25L70.156 98.563L88.312 133a180.6 180.6 0 0 0-15.218 26.094l-38.938 1.062l-7.906 25.28l31.438 23.158c-1.505 9.38-2.24 18.858-2.282 28.344L20.5 254.625l3.656 26.25l38.313 7.5a182 182 0 0 0 8.5 23.5L45.72 343.22l14.093 22.436l39.25-9.187a185 185 0 0 0 7.718 8.53a187 187 0 0 0 17.72 16.125l-7.625 39.313l22.938 13.25l29.968-26.094a179.4 179.4 0 0 0 26.407 8.312l9.782 38.406l26.405 2.157l15.875-36.22c10.97-.66 21.904-2.3 32.656-4.938l25.22 29.22l24.593-9.844l-.72-14.813l-57.406-43.53c-16.712 4.225-34.042 5.356-51.063 3.436c-31.754-3.58-62.27-17.92-86.218-42.686c-54.738-56.614-53.173-146.67 3.438-201.406c27.42-26.513 62.69-39.963 98-40.344c37.59-.406 75.214 13.996 103.438 43.187c45.935 47.512 52.196 118.985 19.562 173.095l31.97 24.25a181 181 0 0 0 10.75-19.375l38.655-1.063l7.906-25.28l-31.217-23a183 183 0 0 0 2.28-28.594l34.688-17.625l-3.655-26.25l-38.28-7.5a182 182 0 0 0-12.75-32.125l22.81-31.594l-15.25-21.657l-37.56 10.906c-.472-.5-.93-1.007-1.408-1.5a185 185 0 0 0-18.937-17.064l7.188-37.125L334 43.78l-28.5 24.814c-9.226-3.713-18.702-6.603-28.313-8.75l-9.343-36.688zM183.25 174.5c-10.344.118-20.597 2.658-30 7.28l45.22 34.314c13.676 10.376 17.555 30.095 7.06 43.937c-10.498 13.85-30.656 15.932-44.53 5.408l-45.188-34.282c-4.627 24.793 4.135 51.063 25.594 67.344c19.245 14.597 43.944 17.33 65.22 9.688l4.78-1.72l4.03 3.063l135.19 102.564l4.03 3.062l-.344 5.063c-1.637 22.55 7.59 45.61 26.844 60.217c21.46 16.28 49.145 17.63 71.78 6.5l-45.186-34.28c-13.874-10.526-17.282-30.506-6.78-44.344c10.5-13.84 30.537-15.405 44.217-5.032l45.188 34.283c4.616-24.784-4.11-51.067-25.563-67.344c-19.313-14.658-43.817-17.562-64.968-10.033l-4.75 1.688l-4.03-3.063l-135.19-102.562l-4.03-3.063l.344-5.03c1.55-22.387-7.85-45.194-27.157-59.845c-12.544-9.516-27.222-13.978-41.78-13.812zm43.563 90.25l163.875 124.344L379.406 404L215.5 279.625z"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4 mt-4">
+        <div class="crancy-history crancy-history--ticket h-100">
+            <div class="crancy-history__main">
+                <div class="crancy-history__content mb-0">
+                    <h4 class="crancy-history__number ms-3">
+                        {{ total_cost|currency_clp }}
+                        <span>Costo total de reparaciones</span>
+                    </h4>
+                    <div class="crancy-history__icon crancy-color5__opacity--bg me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 16 16"><path fill="currentColor" d="M7 2H5a3.5 3.5 0 1 0 0 7h2v3H2.5v2H7v2h2v-2h2a3.5 3.5 0 1 0 0-7H9V4h4.5V2H9V0H7zm2 7h2a1.5 1.5 0 0 1 0 3H9zM7 7H5a1.5 1.5 0 1 1 0-3h2z"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% comment %} Last items {% endcomment %}
+<div class="row mt-2">
+
+    <div class="col-12">
+        <div class="crancy-table crancy-table--v3 mg-top-30 p-5">
+
+            {% comment %} Header {% endcomment %}
+            <div class="crancy-customer-filter d-flex justify-content-between">
+                <h4 class="crancy-sidebar__title">Últimas reparaciones registradas</h4>
+            </div>
+
+            {% comment %} Table {% endcomment %}
+            <table id="crancy-table__main" class="crancy-table__main crancy-table__main-v3">
+                
+                <thead class="crancy-table__head">
+                    <tr>
+                        <th class="crancy-table__column-1 crancy-table__h1">ID</th>
+                        <th class="crancy-table__column-2 crancy-table__h2">Nombre</th>
+                        <th class="crancy-table__column-2 crancy-table__h2">Vehículo</th>
+                        <th class="crancy-table__column-3 crancy-table__h3">Compañía</th>
+                        <th class="crancy-table__column-5 crancy-table__h5">Estado</th>
+                    </tr>
+                </thead>
+                
+                <tbody class="crancy-table__body">
+                    {% for repair in last_repairs %}
+                    <tr onclick="window.location.href='{% url 'detail_repair' repair.id %}'" style="cursor: pointer;">
+                        <td class="crancy-table__column-1 crancy-table__data-1">
+                            #REP-{{ repair.id }}
+                            </h4>
+                        </td>
+                        <td class="crancy-table__column-1 crancy-table__data-1">
+                            {{ repair.title }}
+                        </td>
+                        <td class="crancy-table__column-2 crancy-table__data-2">
+                            {{ repair.vehicle.license_plate }}
+                        </td>
+                        <td class="crancy-table__column-3 crancy-table__data-3">
+                            {{ repair.vehicle.company }}
+                        </td>
+                        <td class="crancy-table__column-4 crancy-table__data-4">
+                            <span class="crancy-table__product-title badge {% if repair.status == 'Pendiente' %}bg-warning{% elif repair.status == 'Finalizada' %}bg-success{% elif repair.status == 'En progreso' %}bg-info{% elif repair.status == 'Sin comenzar' %}bg-secondary{% endif %}">
+                                {{ repair.status }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td class="crancy-table__column-1 crancy-table__data-1 text-center" colspan="7">
+                            <h4 class="crancy-table__product-title text-center py-5">No existen reparaciones registradas.</h4>
+                            </h4>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="crancy-table crancy-table--v3 mg-top-30 p-5">
+
+            {% comment %} Header {% endcomment %}
+            <div class="crancy-customer-filter d-flex justify-content-between">
+                <h4 class="crancy-sidebar__title">Últimos vehículos registrados</h4>
+            </div>
+
+            {% comment %} Table {% endcomment %}
+            <table id="crancy-table__main" class="crancy-table__main crancy-table__main-v3">
+                
+                <thead class="crancy-table__head">
+                    <tr>
+                        <th class="crancy-table__column-1 crancy-table__h1">ID</th>
+                        <th class="crancy-table__column-2 crancy-table__h2">Patente</th>
+                        <th class="crancy-table__column-2 crancy-table__h2">Carro</th>
+                        <th class="crancy-table__column-3 crancy-table__h3">Compañía</th>
+                        <th class="crancy-table__column-5 crancy-table__h5">Reparaciones activas</th>
+                    </tr>
+                </thead>
+                
+                <tbody class="crancy-table__body">
+                    {% for vehicle in last_vehicles %}
+                    <tr  onclick="window.location.href='{% url "detail_vehicle" vehicle.id %}'" style="cursor: pointer;">
+                        <td class="crancy-table__column-1 crancy-table__data-1">
+                            #VEH-{{ vehicle.id }}
+                        </td>
+                        <td class="crancy-table__column-1 crancy-table__data-1">
+                            {{ vehicle.license_plate }}
+                        </td>
+                        <td class="crancy-table__column-2 crancy-table__data-2">
+                            {{ vehicle.car_code }}
+                        </td>
+                        <td class="crancy-table__column-3 crancy-table__data-3">
+                            {{ vehicle.company.name }}
+                        </td>
+                        <td class="crancy-table__column-4 crancy-table__data-4">
+                            <span class="crancy-table__product-title badge bg-info">
+                                {{ vehicle.active_repairs_count }} reparaciones
+                            </span>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td class="crancy-table__column-1 crancy-table__data-1 text-center" colspan="7">
+                            <h4 class="crancy-table__product-title text-center py-5">No existen vehículos registrados.</h4>
+                            </h4>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock main_content %}

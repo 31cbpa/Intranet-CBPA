@@ -1,0 +1,107 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block page_title %}Usuarios{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Page title {% endcomment %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-between mg-top-30">
+
+        <div class="crancy-pbreadcrumb">
+            <h2 class="mb-3">Datos generales</h2>
+        </div>
+
+    </div>
+</div>
+
+
+{% comment %} Create user form {% endcomment %}
+<div class="row">
+    <div class="col-12">
+        <form method="POST">
+        {% csrf_token %}
+
+            {% comment %} Data Form {% endcomment %}
+            <div class="crancy__item-group p-5">
+
+                {% comment %} Name + Last Name {% endcomment %}
+                <div class="crancy__item-form--group">
+                    <div class="row">
+
+                        {% comment %} First name {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Nombre</label>
+                                <input class="crancy__item-input" name="txtFirstName" type="text" maxlength="32" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Last name {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Apellido</label>
+                                <input class="crancy__item-input" name="txtLastName" type="text"
+                                    maxlength="32" required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Email + Password {% endcomment %}
+                <div class="crancy__item-form--group mt-4">
+                    <div class="row">
+
+                        {% comment %} Email {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Correo electrónico</label>
+                                <input class="crancy__item-input" name="txtEmail" type="email"
+                                maxlength="70" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Password {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Contraseña</label>
+                                <input class="crancy__item-input" name="txtPassword" type="password"
+                                    maxlength="100" required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Role {% endcomment %}
+                <div class="crancy__item-form--group mt-4 mb-4 pb-5">
+                    <label class="crancy__item-label">Rol de usuario</label>
+                    <select class="form-select crancy__item-input" 
+                        required name="txtRole">
+                        {% for group in groups %}
+                            <option value="{{ group.id }}">{{ group.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+
+                {% comment %} Buttons {% endcomment %}
+                <div class="d-flex justify-content-end align-items-center mt-5">
+                    <a class="d-flex justify-content-center align-items-center px-3 btn badge bg-danger me-3" href="{% url "list_users" %}">Cancelar</a>
+
+                    <button class="d-flex justify-content-center align-items-center px-3 btn badge bg-success" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m9 20.42l-6.21-6.21l2.83-2.83L9 14.77l9.88-9.89l2.83 2.83z"/></svg>
+                        Registrar usuario
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock main_content %}

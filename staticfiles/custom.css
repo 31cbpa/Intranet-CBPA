@@ -1,0 +1,167 @@
+/* Fondo oscuro para todo el sistema */
+body {
+    background-color: #121212 !important; /* Fondo negro suave */
+    color: #FFFFFF !important; /* Texto blanco */
+}
+
+/* Fondo oscuro para contenedores principales */
+.content-wrapper, .main-footer, .main-header {
+    background-color: #121212 !important; /* Fondo negro suave */
+    color: #FFFFFF !important; /* Texto blanco */
+}
+
+/* Barra lateral */
+.main-sidebar {
+    background-color: #222222 !important; /* Fondo gris oscuro */
+    color: #FFFFFF !important; /* Texto blanco */
+}
+
+.main-sidebar .nav-link {
+    color: #FFD700 !important; /* Enlaces en dorado */
+}
+
+.main-sidebar .nav-link.active {
+    background-color: #FFD700 !important; /* Fondo dorado para el enlace activo */
+    color: #222222 !important; /* Texto oscuro para contraste */
+}
+
+/* Barra de navegación superior */
+.navbar {
+    background-color: #222222 !important; /* Fondo gris oscuro */
+    color: #FFFFFF !important; /* Texto blanco */
+}
+
+.navbar .nav-link {
+    color: #FFD700 !important; /* Enlaces en dorado */
+}
+
+.navbar .nav-link:hover {
+    color: #FFFFFF !important; /* Enlaces en blanco al pasar el cursor */
+}
+
+/* Botones generales */
+.btn-primary, .btn-success, .btn-info, .btn-warning, .btn-danger {
+    background-color: #FFD700 !important; /* Fondo dorado */
+    border-color: #FFD700 !important; /* Borde dorado */
+    color: #222222 !important; /* Texto oscuro */
+}
+
+.btn-primary:hover, .btn-success:hover, .btn-info:hover, .btn-warning:hover, .btn-danger:hover {
+    background-color: #FFC107 !important; /* Fondo dorado más claro */
+    border-color: #FFC107 !important; /* Borde dorado más claro */
+    color: #222222 !important;
+}
+
+/* Botones específicos para "Añadir" y "Modificar" */
+.addlink {
+    background-color: #FFD700 !important; /* Fondo dorado */
+    border-color: #FFD700 !important; /* Borde dorado */
+    color: #222222 !important; /* Texto oscuro */
+}
+
+.addlink:hover {
+    background-color: #FFC107 !important; /* Fondo dorado más claro */
+    border-color: #FFC107 !important;
+    color: #222222 !important;
+}
+
+/* Tablas */
+.table {
+    background-color: #222222 !important; /* Fondo gris oscuro */
+    color: #FFFFFF !important; /* Texto blanco */
+    border-radius: 10px !important; /* Bordes redondeados */
+    overflow: hidden; /* Asegura que el contenido respete el redondeo */
+}
+
+.table thead th {
+    background-color: #FFD700 !important; /* Encabezados en dorado */
+    color: #222222 !important; /* Texto oscuro */
+}
+
+.table tbody tr:hover {
+    background-color: #333333 !important; /* Fondo gris más oscuro al pasar el cursor */
+}
+
+/* Formularios */
+.form-control {
+    background-color: #333333 !important; /* Fondo gris oscuro */
+    color: #FFFFFF !important; /* Texto blanco */
+    border: 1px solid #FFD700 !important; /* Borde dorado */
+}
+
+.form-control:focus {
+    background-color: #444444 !important; /* Fondo más claro al enfocar */
+    border-color: #FFC107 !important; /* Borde dorado más claro */
+    color: #FFFFFF !important;
+}
+
+/* Enlaces */
+a {
+    color: #FFD700 !important; /* Enlaces en dorado */
+}
+
+a:hover {
+    color: #FFC107 !important; /* Enlaces en dorado más claro */
+}
+
+/* Tarjetas */
+.card {
+    background-color: #222222 !important; /* Fondo gris oscuro */
+    color: #FFFFFF !important; /* Texto blanco */
+    border-radius: 10px !important; /* Bordes redondeados */
+}
+
+.card a {
+    color: #FFD700 !important; /* Enlaces en dorado */
+}
+
+.card a:hover {
+    color: #FFC107 !important; /* Enlaces en dorado más claro */
+}
+
+.card-header {
+    background-color: #333333 !important; /* Fondo gris más oscuro */
+    color: #FFD700 !important; /* Texto dorado */
+}
+
+/* Timeline (Acciones recientes) */
+.timeline-badge {
+    background-color: #FFD700 !important; /* Fondo dorado */
+    color: #222222 !important; /* Texto oscuro */
+}
+
+.timeline-body {
+    background-color: #222222 !important; /* Fondo gris oscuro */
+    color: #FFFFFF !important; /* Texto blanco */
+}
+
+/* Paneles y cuadros */
+.box {
+    background-color: #222222 !important; /* Fondo gris oscuro */
+    color: #FFFFFF !important; /* Texto blanco */
+}
+
+.box-header {
+    background-color: #333333 !important; /* Fondo gris más oscuro */
+    color: #FFD700 !important; /* Texto dorado */
+}
+
+/* Footer */
+.main-footer {
+    background-color: #121212 !important; /* Fondo negro suave */
+    color: #FFFFFF !important; /* Texto blanco */
+}
+
+/* Breadcrumb (Ruta de navegación) */
+.breadcrumb {
+    background-color: #222222 !important; /* Fondo gris oscuro */
+    color: #FFD700 !important; /* Texto dorado */
+}
+
+.breadcrumb a {
+    color: #FFD700 !important; /* Enlaces en dorado */
+}
+
+.breadcrumb a:hover {
+    color: #FFC107 !important; /* Enlaces en dorado más claro */
+}

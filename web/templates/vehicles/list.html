@@ -1,0 +1,139 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block page_title %}Vehículos{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Page title {% endcomment %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-between mg-top-30">
+
+        <div class="crancy-pbreadcrumb">
+            <h2 class="mb-3">Vehículos registrados</h2>
+        </div>
+
+        <a href="{% url "create_vehicle" %}" class="d-flex justify-content-center align-items-center px-3 btn badge btn-dark mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"/></svg>
+            Nuevo vehículo
+        </a>
+
+    </div>
+</div>
+
+{% comment %} Alerts {% endcomment %}
+{% if messages %}
+<div class="row mt-4">
+    <div class="col-12">
+        {% for message in messages %}
+        {% comment %} Extra tags {% endcomment %}
+            <div class="alert {{ message.tags }} d-flex align-items-center mt-5" role="alert">
+                <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17q.425 0 .713-.288T13 16t-.288-.712T12 15t-.712.288T11 16t.288.713T12 17m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/></svg>
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% comment %} Vehicles list {% endcomment %}
+<div class="row">
+    <div class="col-12">
+        <div class="crancy-body">
+            <div class="crancy-dsinner">
+                <div class="crancy-table crancy-table--v3">
+
+                    {% comment %} Table {% endcomment %}
+                    <table id="crancy-table__main" class="crancy-table__main crancy-table__main-v3">
+                        
+                        <thead class="crancy-table__head">
+                            <tr>
+                                <th class="crancy-table__column-2 crancy-table__h2">ID</th>
+                                <th class="crancy-table__column-2 crancy-table__h2">Patente</th>
+                                <th class="crancy-table__column-1 crancy-table__h1">Carro</th>
+                                <th class="crancy-table__column-3 crancy-table__h3">Marca</th>
+                                <th class="crancy-table__column-2 crancy-table__h2">Compañía</th>
+                                <th class="crancy-table__column-5 crancy-table__h5">Reparaciones activas</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody class="crancy-table__body">
+                            {% for vehicle in vehicles %}
+                            <tr onclick="window.location.href='{% url "detail_vehicle" vehicle.id %}'" style="cursor: pointer;">
+                                <td class="crancy-table__column-2 crancy-table__data-2">
+                                    #VEH-{{ vehicle.id }}
+                                </td>
+                                <td class="crancy-table__column-2 crancy-table__data-2">
+                                    {{ vehicle.license_plate }}
+                                </td>
+                                <td class="crancy-table__column-1 crancy-table__data-1">
+                                    {{ vehicle.car_code }}
+                                </td>
+                                <td class="crancy-table__column-3 crancy-table__data-3">
+                                    {{ vehicle.brand }}
+                                </td>
+                                <td class="crancy-table__column-1 crancy-table__data-1">
+                                    {{ vehicle.company.name }}
+                                    </h4>
+                                </td>
+                                <td class="crancy-table__column-4 crancy-table__data-4">
+                                    <span class="crancy-table__product-title badge bg-info">
+                                        {{ vehicle.active_repairs_count }} reparaciones
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="crancy-table__column-1 crancy-table__data-1 text-center" colspan="7">
+                                    <h4 class="crancy-table__product-title text-center py-5">No existen vehículos registrados.</h4>
+                                    </h4>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                        <tfoot>
+                            <tr class="p-0">
+                                <td class="p-0" colspan="4">
+                                    <p class="mx-4 text-start">Mostrando {{ vehicles|length }} vehículos.</p>
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function deleteVehicle(id) {
+        
+        Swal.fire({
+            title: "¿Estás seguro de eliminar este vehículo?",
+            text: "No podrás revertir esta acción.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Eliminar"
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                window.location.href = `{% url "remove_vehicle" 0 %}`.replace('0', id);
+            }
+
+        });
+
+    }
+
+</script>
+
+
+{% endblock main_content %}

@@ -1,0 +1,92 @@
+{% extends "layout/base.html" %}
+{% load static %}
+{% load custom_tags %}
+
+{% block page_title %}Repuestos{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Page title {% endcomment %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-between mg-top-30">
+        <div class="crancy-pbreadcrumb">
+            <h2 class="mb-3">Datos generales</h2>
+        </div>
+    </div>
+</div>
+
+{% comment %} Parts detail {% endcomment %}
+<div class="row">
+
+    {% comment %} General data {% endcomment %}
+    <div class="col-12">
+        <form method="POST">
+        {% csrf_token %}
+
+            {% comment %} Data Form {% endcomment %}
+            <div class="crancy__item-group p-5">
+
+                {% comment %} General data {% endcomment %}
+                <div class="crancy__item-form--group">
+                    <div class="row">
+
+                        {% comment %} Name {% endcomment %}
+                        <div class="col-lg-12 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Nombre</label>
+                                <input class="crancy__item-input" name="txtPartsName" type="text"
+                                    value="{{ part.name }}" maxlength="256" disabled>
+                            </div>
+                        </div>
+
+                        {% comment %} Value {% endcomment %}
+                        <div class="col-lg-12 col-12 mt-4">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Valor</label>
+                                <input class="crancy__item-input" name="txtPartsValue" type="text" min="0" required
+                                    value="{{ part.value|currency_clp }}" maxlength="256" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+
+    {% comment %} Attachments {% endcomment %}
+    <div class="col-12">
+
+        <h2 class="mt-5">Archivos adjuntos</h2>
+
+        <div class="crancy__item-group p-5">
+
+            {% comment %} General data {% endcomment %}
+            <div class="crancy__item-form--group">
+
+                {% if attachments %}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-3">
+                   
+                    {% for attachment in attachments %}
+                        <div class="col">
+                            <a href="{{ attachment.attachment.url }}" target="_blank" class="attachment-container w-100">
+                                <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24"><path fill="currentColor" d="m12 16l-5-5l1.4-1.45l2.6 2.6V4h2v8.15l2.6-2.6L17 11zm-6 4q-.825 0-1.412-.587T4 18v-3h2v3h12v-3h2v3q0 .825-.587 1.413T18 20z"/></svg>
+                                {{ attachment }}
+                            </a>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+                    <h4 class="text-center text-secondary py-5 mb-0">No existen archivos adjuntos asociados a este repuesto.</h4>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock main_content %}

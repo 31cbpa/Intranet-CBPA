@@ -1,0 +1,101 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block page_title %}Usuarios{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Page title {% endcomment %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-between mg-top-30">
+
+        <div class="crancy-pbreadcrumb">
+            <h2 class="mb-3">Datos generales</h2>
+        </div>
+
+    </div>
+</div>
+
+{% comment %} User detail {% endcomment %}
+<div class="row">
+    <div class="col-12">
+        <form method="POST">
+        {% csrf_token %}
+
+            {% comment %} Data Form {% endcomment %}
+            <div class="crancy__item-group p-5">
+
+                {% comment %} Name + Last Name {% endcomment %}
+                <div class="crancy__item-form--group">
+                    <div class="row">
+
+                        {% comment %} First name {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Nombre</label>
+                                <input class="crancy__item-input" name="txtFirstName" type="text"
+                                    value="{{ user.first_name }}" maxlength="32" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Last name {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Apellido</label>
+                                <input class="crancy__item-input" name="txtLastName" type="text"
+                                    value="{{ user.last_name }}" maxlength="32" required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Email {% endcomment %}
+                <div class="crancy__item-form--group mt-4">
+                    <label class="crancy__item-label">Correo electrónico</label>
+                    <input class="crancy__item-input" name="txtEmail" type="email" value="{{ user.email }}" maxlength="70" required>
+                </div>
+
+                {% comment %} Role {% endcomment %}
+                <div class="crancy__item-form--group mt-4 mb-4 pb-5">
+                    <label class="crancy__item-label">Rol de usuario</label>
+                    <select class="form-select crancy__item-input" 
+                        required name="txtRole">
+                        {% if user_profile.role == "Administrador" %}
+                        <option value="Administrador">
+                            Administrador
+                        </option>
+                        {% endif %}
+                        <option {% if user_profile.role == "Superintendente" %}selected{% endif %} value="Superintendente">
+                            Superintendente
+                        </option>
+                        <option {% if user_profile.role == "Capitán" %}selected{% endif %} value="Capitán">
+                            Capitán
+                        </option>
+                        <option {% if user_profile.role == "Mecánico" %}selected{% endif %} value="Mecánico">
+                            Mecánico
+                        </option>
+                        <option {% if user_profile.role == "Secretario" %}selected{% endif %} value="Secretario">
+                            Secretario
+                        </option>
+                    </select>
+
+                </div>
+
+                {% comment %} Buttons {% endcomment %}
+                <div class="d-flex justify-content-end align-items-center mt-5">
+
+                    <button class="d-flex justify-content-center align-items-center px-3 btn badge bg-success" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m9 20.42l-6.21-6.21l2.83-2.83L9 14.77l9.88-9.89l2.83 2.83z"/></svg>
+                        Guardar cambios
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock main_content %}

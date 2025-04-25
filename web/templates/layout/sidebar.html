@@ -1,0 +1,44 @@
+{% load static %}
+{% load custom_tags %}
+
+<div class="crancy-smenu" id="CrancyMenu">
+    <div class="admin-menu">
+
+        {% comment %} Logo {% endcomment %}
+        <div class="logo crancy-sidebar-padding pd-right-0">
+
+            <a class="crancy-logo d-flex justify-content-center" href="{% url "home" %}">
+
+                {% comment %} Default logo {% endcomment %}
+                <img class="crancy-logo__main" src="{% static "images/logo-cbpa.png" %}" alt="#">
+
+                {% comment %} Dark logo {% endcomment %}
+                <img class="crancy-logo__main--small" src="{% static "images/logo-cbpa.png" %}" alt="#">
+
+            </a>
+
+            <div id="crancy__sicon" class="crancy__sicon close-icon">
+                <img src="{% static "img/arrow-icon.svg" %}">
+            </div>
+
+        </div>
+
+        {% comment %} Menu {% endcomment %}
+        <div class="admin-menu__one crancy-sidebar-padding mg-top-20">
+
+            {% if request.user|has_group:"Administrador" %}
+                {% include "layout/menu_admin.html" %}
+            {% endif %}
+
+            {% if request.user|has_group:"Mecánico" %}
+                {% include "layout/menu_mechanic.html" %}
+            {% endif %}
+
+            {% if request.user|has_group:"Comandante" %}
+                {% include "layout/menu_comandant.html" %}
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,131 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block page_title %}Compañias{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Page title {% endcomment %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-between mg-top-30">
+
+        <div class="crancy-pbreadcrumb">
+            <h2 class="mb-3">Compañías registradas</h2>
+        </div>
+
+        <a href="{% url "create_company" %}" class="d-flex justify-content-center align-items-center px-3 btn badge btn-dark mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"/></svg>
+            Nueva compañia
+        </a>
+
+
+    </div>
+</div>
+
+{% comment %} Alerts {% endcomment %}
+{% if messages %}
+<div class="row mt-4">
+    <div class="col-12">
+        
+            {% for message in messages %}
+            {% comment %} Extra tags {% endcomment %}
+                <div class="alert {{ message.tags }} d-flex align-items-center mt-5" role="alert">
+                    <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17q.425 0 .713-.288T13 16t-.288-.712T12 15t-.712.288T11 16t.288.713T12 17m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/></svg>
+                    <div>
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+        
+    </div>
+</div>
+{% endif %}
+
+{% comment %} Companies list {% endcomment %}
+<div class="row">
+    <div class="col-12">
+        <div class="crancy-body">
+            <div class="crancy-dsinner">
+                <div class="crancy-table crancy-table--v3">
+
+                    {% comment %} Table {% endcomment %}
+                    <table id="crancy-table__main" class="crancy-table__main crancy-table__main-v3">
+                        
+                        <thead class="crancy-table__head">
+                            <tr>
+                                <th class="crancy-table__column-1 crancy-table__h1">ID</th>
+                                <th class="crancy-table__column-2 crancy-table__h2">Nombre</th>
+                                <th class="crancy-table__column-2 crancy-table__h2">Dirección</th>
+                                <th class="crancy-table__column-2 crancy-table__h2">Director</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody class="crancy-table__body">
+                            {% for company in companies%}
+                            <tr  onclick="window.location.href='{% url "detail_company" company.id %}'" style="cursor: pointer;">
+                                <td class="crancy-table__column-1    crancy-table__data-1">
+                                    #COM-{{ company.id }}
+                                </td>
+                                <td class="crancy-table__column-2    crancy-table__data-2">
+                                    {{ company.name }}
+                                </td>
+                                <td class="crancy-table__column-2    crancy-table__data-2">
+                                    {{ company.address }}
+                                </td>
+                                <td class="crancy-table__column-2    crancy-table__data-2">
+                                    {{ company.director }}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="crancy-table__column-1 crancy-table__data-1 text-center" colspan="6">
+                                    <h4 class="crancy-table__product-title text-center py-5">No existen compañías registradas.</h4>
+                                    </h4>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                        <tfoot>
+                            <tr class="p-0">
+                                <td class="p-0" colspan="4">
+                                    <p class="mx-4 text-start">Mostrando {{ companies|length }} compañias.</p>
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function deleteCompany(id) {
+        
+        Swal.fire({
+            title: "¿Estás seguro de eliminar esta compañía?",
+            text: "No podrás revertir esta acción.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Eliminar"
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                window.location.href = `{% url "remove_company" 0 %}`.replace('0', id);
+            }
+
+        });
+
+    }
+
+</script>
+
+
+{% endblock main_content %}

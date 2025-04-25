@@ -1,0 +1,87 @@
+<h4 class="admin-menu__title mt-4">Taller mecánico</h4>
+            
+<div class="menu-bar">
+    <ul id="CrancyMenu" class="menu-bar__one crancy-dashboard-menu">
+
+        {% comment %} Home {% endcomment %}
+        <li class="{% if request.path == '/' %}active{% endif %}">
+            <a class="collapsed" href="{% url "home" %}">
+                <span class="menu-bar__text">
+                    <span class="crancy-menu-icon crancy-svg-icon__v1">
+                        <svg class="crancy-svg-icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7z"/></svg>
+                    </span>
+                    <span class="menu-bar__name">Inicio</span>
+                </span>
+            </a>
+        </li>
+
+        {% comment %} Companies {% endcomment %}
+        <li class="{% if '/companies/' in request.path %}active{% endif %}">
+            <a class="collapsed" href="{% url "list_companies" %}">
+                <span class="menu-bar__text">
+                    <span class="crancy-menu-icon crancy-svg-icon__v1">
+                        <svg class="crancy-svg-icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M18 15h-2v2h2m0-6h-2v2h2m2 6h-8v-2h2v-2h-2v-2h2v-2h-2V9h8M10 7H8V5h2m0 6H8V9h2m0 6H8v-2h2m0 6H8v-2h2M6 7H4V5h2m0 6H4V9h2m0 6H4v-2h2m0 6H4v-2h2m6-10V3H2v18h20V7z"/></svg>
+                    </span>
+                    <span class="menu-bar__name">Compañías</span>
+                </span>
+            </a>
+        </li>
+
+        {% comment %} Repairs {% endcomment %}
+        <li class="{% if request.path == '/repairs/' %}active{% endif %}">
+            <a class="collapsed" href="{% url "list_repairs" %}">
+                <span class="menu-bar__text">
+                    <span class="crancy-menu-icon crancy-svg-icon__v1">
+                        <svg class="crancy-svg-icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M20.96 16.45c.01-.15.04-.3.04-.45v.5zM11 16c0 .71.15 1.39.42 2H6v1c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1v-8l2.08-6c.2-.58.76-1 1.42-1h11c.66 0 1.22.42 1.42 1L21 11v5c0-2.76-2.24-5-5-5s-5 2.24-5 5m-3-2.5c0-.83-.67-1.5-1.5-1.5S5 12.67 5 13.5S5.67 15 6.5 15S8 14.33 8 13.5M19 10l-1.5-4.5h-11L5 10zm3.87 11.19l-4.11-4.11c.41-1.04.18-2.26-.68-3.11c-.9-.91-2.25-1.09-3.34-.59l1.94 1.94l-1.35 1.36l-1.99-1.95c-.54 1.09-.29 2.44.59 3.35a2.91 2.91 0 0 0 3.12.68l4.11 4.1c.18.19.45.19.63 0l1.04-1.03c.22-.18.22-.5.04-.64"/></svg>
+                    </span>
+                    <span class="menu-bar__name">Solicitudes de reparación</span>
+                </span>
+            </a>
+        </li>
+
+        {% comment %} Mechanical Workshop Menu {% endcomment %}
+        <li class="">
+            <a href="#!" class="{% if '/vehicles/' in request.path %}{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#menu-item__apps" aria-expanded="false"><span class="menu-bar__text">
+                <span class="crancy-menu-icon crancy-svg-icon__v1">
+                    <svg class="crancy-svg-icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M20.96 16.45c.01-.15.04-.3.04-.45v.5zM11 16c0 .71.15 1.39.42 2H6v1c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1v-8l2.08-6c.2-.58.76-1 1.42-1h11c.66 0 1.22.42 1.42 1L21 11v5c0-2.76-2.24-5-5-5s-5 2.24-5 5m-3-2.5c0-.83-.67-1.5-1.5-1.5S5 12.67 5 13.5S5.67 15 6.5 15S8 14.33 8 13.5M19 10l-1.5-4.5h-11L5 10zm3.87 11.19l-4.11-4.11c.41-1.04.18-2.26-.68-3.11c-.9-.91-2.25-1.09-3.34-.59l1.94 1.94l-1.35 1.36l-1.99-1.95c-.54 1.09-.29 2.44.59 3.35a2.91 2.91 0 0 0 3.12.68l4.11 4.1c.18.19.45.19.63 0l1.04-1.03c.22-.18.22-.5.04-.64"/></svg></span>
+                <span class="menu-bar__name">Taller mecánico</span></span> <span class="crancy__toggle"></span>
+            </a>
+            <div class="crancy__dropdown collapse {% if '/vehicles/' in request.path or '/repairs/' in request.path or '/parts/' in request.path %}show {% else %} {% endif %}" id="menu-item__apps" data-bs-parent="#CrancyMenu" style="">
+                <ul class="menu-bar__one-dropdown">
+
+                    {% comment %} Vehicles {% endcomment %}
+                    <li>
+                        <a href="{% url "list_vehicles" %}">
+                            <span class="menu-bar__text">
+                                <span class="menu-bar__name {% if '/vehicles/' in request.path %}active{% endif %}">
+                                    Vehículos
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+
+                    {% comment %} Repairs {% endcomment %}
+                    <li>
+                        <a href="{% url "list_repairs" %}">
+                            <span class="menu-bar__text">
+                                <span class="menu-bar__name {% if '/repairs/' in request.path %}active{% endif %}">Reparaciones</span>
+                            </span>
+                        </a>
+                    </li>
+
+                    {% comment %} Parts {% endcomment %}
+                    <li>
+                        <a href="{% url "list_parts" %}">
+                            <span class="menu-bar__text">
+                                <span class="menu-bar__name {% if '/parts/' in request.path %}active{% endif %}">
+                                    Compras de repuestos
+                                </span>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+    </ul>
+</div>

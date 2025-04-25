@@ -1,0 +1,295 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block page_title %}Vehículos{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Page title {% endcomment %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-between mg-top-30">
+
+        <div class="crancy-pbreadcrumb">
+            <h2 class="mb-3">Datos generales</h2>
+        </div>
+
+        <a href="{% url "create_repair" vehicle.id %}" class="d-flex justify-content-center align-items-center px-3 btn badge btn-dark mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M20.96 16.45c.01-.15.04-.3.04-.45v.5zM11 16c0 .71.15 1.39.42 2H6v1c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1v-8l2.08-6c.2-.58.76-1 1.42-1h11c.66 0 1.22.42 1.42 1L21 11v5c0-2.76-2.24-5-5-5s-5 2.24-5 5m-3-2.5c0-.83-.67-1.5-1.5-1.5S5 12.67 5 13.5S5.67 15 6.5 15S8 14.33 8 13.5M19 10l-1.5-4.5h-11L5 10zm3.87 11.19l-4.11-4.11c.41-1.04.18-2.26-.68-3.11c-.9-.91-2.25-1.09-3.34-.59l1.94 1.94l-1.35 1.36l-1.99-1.95c-.54 1.09-.29 2.44.59 3.35a2.91 2.91 0 0 0 3.12.68l4.11 4.1c.18.19.45.19.63 0l1.04-1.03c.22-.18.22-.5.04-.64"/></svg>
+            Solicitar reparación
+        </a>
+
+    </div>
+</div>
+
+{% comment %} Alerts {% endcomment %}
+{% if messages %}
+<div class="row mt-4">
+    <div class="col-12">
+        
+        {% for message in messages %}
+        {% comment %} Extra tags {% endcomment %}
+            <div class="alert {{ message.tags }} d-flex align-items-center mt-5" role="alert">
+                <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17q.425 0 .713-.288T13 16t-.288-.712T12 15t-.712.288T11 16t.288.713T12 17m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/></svg>
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+        
+    </div>
+</div>
+{% endif %}
+
+{% comment %} Vehicle detail {% endcomment %}
+<div class="row">
+
+    {% comment %} General data {% endcomment %}
+    <div class="col-12">
+        <form method="POST">
+        {% csrf_token %}
+            <div class="crancy__item-group p-5">
+
+                {% comment %} Car code + Company {% endcomment %}
+                <div class="crancy__item-form--group">
+                    <div class="row">
+
+                        {% comment %} Car code {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Código Carro</label>
+                                <input class="crancy__item-input" name="txtCarCode" type="text"
+                                    value="{{ vehicle.car_code }}" maxlength="32" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Company {% endcomment %}
+                        <div class="col-lg-3 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Compañía</label>
+                                <select class="crancy__item-input" name="txtCompany" id="" required>
+                                    {% for company in companies %}
+                                    <option {% if company == vehicle.company.id %}selected{% endif %} value="{{company.id}}">{{company}}</option>
+                                    {% empty %}
+                                    <option value="" disabled selected>No hay compañías registradas</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        {% comment %} Car type {% endcomment %}
+                        <div class="col-lg-3 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Tipo de Carro</label>
+                                <select class="crancy__item-input" name="txtCarType" required>
+                                    <option value="Operativo" {% if vehicle.car_type == 'Operativo' %}selected{% endif %}>Operativo</option>
+                                    <option value="Reliquia" {% if vehicle.car_type == 'Reliquia' %}selected{% endif %}>Reliquia</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% comment %} License Plate + Year {% endcomment %}
+                <div class="crancy__item-form--group mt-4">
+                    <div class="row">
+
+                        {% comment %} License Plate {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Patente</label>
+                                <input class="crancy__item-input" name="txtLicensePlate" type="text"
+                                    value="{{ vehicle.license_plate }}" maxlength="7" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Year {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Año</label>
+                                <input class="crancy__item-input" name="txtYear" type="number"
+                                    value="{{ vehicle.year }}" min="1990" max="2030" required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Brand + Model {% endcomment %}
+                <div class="crancy__item-form--group mt-4">
+                    <div class="row">
+
+                        {% comment %} Brand {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Marca</label>
+                                <input class="crancy__item-input" name="txtBrand" type="text"
+                                    value="{{ vehicle.brand }}" maxlength="256" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Model {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Modelo</label>
+                                <input class="crancy__item-input" name="txtModel" type="text"
+                                    value="{{ vehicle.model }}" maxlength="256" required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Technical inspection + Emissions inspection + Vehicle registration {% endcomment %}
+                <div class="crancy__item-form--group mt-4">
+                    <div class="row">
+
+                        {% comment %} Technical inspection {% endcomment %}
+                        <div class="col-lg-4 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Revisión técnica</label>
+                                <input class="crancy__item-input" name="txtTechnicalInspection" type="date"
+                                    value="{{ vehicle.technical_inspection | date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Emissions inspection {% endcomment %}
+                        <div class="col-lg-4 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Revisión de gases</label>
+                                <input class="crancy__item-input" name="txtEmissionsInspection" type="date"
+                                    value="{{ vehicle.emissions_inspection | date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Vehicle registration {% endcomment %}
+                        <div class="col-lg-4 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Permiso de circulación</label>
+                                <input class="crancy__item-input" name="txtVehicleRegistration" type="date"
+                                    value="{{ vehicle.vehicle_registration | date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Insurance + Insurance expiration date {% endcomment %}
+                <div class="crancy__item-form--group mt-4 mb-4">
+                    <div class="row">
+
+                        {% comment %} Insurance {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Seguro</label>
+                                <input class="crancy__item-input" name="txtInsurance" type="text"
+                                    value="{{ vehicle.insurance }}" maxlength="32" required>
+                            </div>
+                        </div>
+
+                        {% comment %} Insurance expiration date {% endcomment %}
+                        <div class="col-lg-6 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Fecha expiración seguro</label>
+                                <input class="crancy__item-input" name="txtInsuranceExpDate" type="date"
+                                    value="{{ vehicle.insurance_exp_date | date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Buttons {% endcomment %}
+                <div class="d-flex justify-content-end align-items-center mt-5">
+
+                    <button class="d-flex justify-content-center align-items-center px-3 btn badge bg-success" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m9 20.42l-6.21-6.21l2.83-2.83L9 14.77l9.88-9.89l2.83 2.83z"/></svg>
+                        Guardar cambios
+                    </button>
+
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    {% comment %} Repairs {% endcomment %}
+    <div class="col-12 crancy-body mb-5">
+        <h2 class="mt-5">Reparaciones</h2>
+        <div class="crancy-dsinner">
+            <div class="crancy-table crancy-table--v3">
+
+                {% comment %} Table {% endcomment %}
+                <table id="crancy-table__main" class="crancy-table__main crancy-table__main-v3">
+                    
+                    <thead class="crancy-table__head">
+                        <tr>
+                            <th class="crancy-table__column-1 crancy-table__h1">ID</th>
+                            <th class="crancy-table__column-2 crancy-table__h2">Nombre</th>
+                            <th class="crancy-table__column-2 crancy-table__h2">Fecha solicitud</th>
+                            <th class="crancy-table__column-3 crancy-table__h3">Estado</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody class="crancy-table__body">
+                        {% for repair in repairs %}
+                        <tr onclick="window.location.href='{% url 'detail_repair' repair.id %}'" style="cursor: pointer;">
+                            <td class="crancy-table__column-1 crancy-table__data-1">
+                                #REP-{{ repair.id }}
+                                </h4>
+                            </td>
+                            <td class="crancy-table__column-1 crancy-table__data-1">
+                                {{ repair.title }}
+                            </td>
+                            <td class="crancy-table__column-2 crancy-table__data-2">
+                                {{ repair.start_date | date:"d/m/Y" }}
+                            </td>
+                            <td class="crancy-table__column-3 crancy-table__data-3">
+                                <span class="crancy-table__product-title badge {% if repair.status == 'Pendiente' %}bg-warning{% elif repair.status == 'Finalizada' %}bg-success{% elif repair.status == 'En progreso' %}bg-info {% elif repair.status == 'Sin comenzar' %}bg-secondary{% endif %}">
+                                    {{ repair.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td class="crancy-table__column-1 crancy-table__data-1 text-center" colspan="7">
+                                <h4 class="crancy-table__product-title text-center py-5">No existen reparaciones asociadas a este vehículo.</h4>
+                                </h4>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    function deleteRepair(id) {
+        
+        Swal.fire({
+            title: "¿Estás seguro de eliminar esta reparación?",
+            text: "No podrás revertir esta acción.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Eliminar"
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                window.location.href = `{% url "remove_repair" 0 %}`.replace('0', id);
+            }
+
+        });
+
+    }
+
+</script>
+
+{% endblock main_content %}

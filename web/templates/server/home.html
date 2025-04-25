@@ -1,0 +1,18 @@
+{% extends 'layout/base.html' %}
+
+{% block page_title %}Información del Servidor{% endblock %}
+
+{% block main_content %}
+    <h1>Detalles del Servidor</h1>
+    <p><strong>Hostname:</strong> {{ hostname }}</p>
+    <p><strong>IP Address:</strong> {{ ip_address }}</p>
+    <p><strong>Plataforma:</strong> {{ platform }}</p>
+    <p><strong>Sistema Operativo:</strong> {{ os }}</p>
+    <p><strong>Versión del SO:</strong> {{ os_version }}</p>
+    <p><strong>Núcleos CPU:</strong> {{ cpu_cores }}</p>
+    <p><strong>Uso de CPU:</strong> {{ cpu_usage }}%</p>
+    <p><strong>Memoria total:</strong> {{ total_memory }} GB</p>
+    <p><strong>Memoria usada:</strong> {{ used_memory }} GB</p>
+    <p><strong>Uso de memoria:</strong> {{ memory_percent }}%</p>
+    <p><strong>Hora de inicio:</strong> {{ boot_time }}</p>
+{% endblock %}
