@@ -18,7 +18,7 @@
 {% comment %} Counters {% endcomment %}
 <div class="row mt-4">
 
-    <div class="col-6">
+    <div class="col-4">
         <div class="crancy-history crancy-history--ticket h-100">
             <div class="crancy-history__main">
                 <div class="crancy-history__content mb-0">
@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <div class="col-6">
+    <div class="col-4">
         <div class="crancy-history crancy-history--ticket h-100">
             <div class="crancy-history__main">
                 <div class="crancy-history__content mb-0">
@@ -47,6 +47,22 @@
                     </h4>
                     <div class="crancy-history__icon crancy-color2__opacity--bg me-3">
                         <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-1.25 0-2.125-.875T4 18H3q-.825 0-1.412-.587T1 16v-5h11V7q0-.825.588-1.412T14 5h2V4q0-.425.288-.712T17 3h1q.425 0 .713.288T19 4v1h.55q.65 0 1.175.375t.725 1l1.45 4.3q.05.15.075.313t.025.337V18h-3q0 1.25-.875 2.125T17 21t-2.125-.875T14 18h-4q0 1.25-.875 2.125T7 21m0-2q.425 0 .713-.288T8 18t-.288-.712T7 17t-.712.288T6 18t.288.713T7 19m10 0q.425 0 .713-.288T18 18t-.288-.712T17 17t-.712.288T16 18t.288.713T17 19m-3-8h6.9l-1.35-4H14zM1 10V8.5h1v-2H1V5h10v1.5h-1v2h1V10zm2.5-1.5h1.75v-2H3.5zm3.25 0H8.5v-2H6.75z"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="crancy-history crancy-history--ticket h-100">
+            <div class="crancy-history__main">
+                <div class="crancy-history__content mb-0">
+                    <h4 class="crancy-history__number ms-3">
+                        {{ firefighters_count }}
+                        <span>Bomberos</span>
+                    </h4>
+                    <div class="crancy-history__icon crancy-color6__opacity--bg me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5m0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3s3-1.34 3-3s-1.34-3-3-3"/></svg>
                     </div>
                 </div>
             </div>
@@ -105,6 +121,65 @@
 
 {% comment %} Last items {% endcomment %}
 <div class="row mt-2">
+
+    <div class="col-12">
+        <div class="crancy-table crancy-table--v3 mg-top-30 p-5">
+
+            {% comment %} Header {% endcomment %}
+            <div class="crancy-customer-filter d-flex justify-content-between">
+                <h4 class="crancy-sidebar__title">Últimos bomberos registrados</h4>
+                <a href="{% url 'list_firefighters' %}" class="crancy-btn crancy-btn__primary">Ver todos</a>
+            </div>
+
+            {% comment %} Table {% endcomment %}
+            <table id="crancy-table__main" class="crancy-table__main crancy-table__main-v3">
+                
+                <thead class="crancy-table__head">
+                    <tr>
+                        <th class="crancy-table__column-1 crancy-table__h1">ID</th>
+                        <th class="crancy-table__column-2 crancy-table__h2">Nombre</th>
+                        <th class="crancy-table__column-2 crancy-table__h2">Compañía</th>
+                        <th class="crancy-table__column-3 crancy-table__h3">Cargo</th>
+                        <th class="crancy-table__column-5 crancy-table__h5">Nº Registro</th>
+                    </tr>
+                </thead>
+                
+                <tbody class="crancy-table__body">
+                    {% for firefighter in last_firefighters %}
+                    <tr onclick="window.location.href='{% url 'detail_firefighter' firefighter.id %}'" style="cursor: pointer;">
+                        <td class="crancy-table__column-1 crancy-table__data-1">
+                            #BOM-{{ firefighter.id }}
+                        </td>
+                        <td class="crancy-table__column-1 crancy-table__data-1">
+                            {{ firefighter.first_name }} {{ firefighter.paternal_surname }} {{ firefighter.maternal_surname }}
+                        </td>
+                        <td class="crancy-table__column-2 crancy-table__data-2">
+                            {{ firefighter.company.name }}
+                        </td>
+                        <td class="crancy-table__column-3 crancy-table__data-3">
+                            {{ firefighter.position }}
+                        </td>
+                        <td class="crancy-table__column-4 crancy-table__data-4">
+                            <span class="crancy-table__product-title badge bg-info">
+                                {{ firefighter.registration_number }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td class="crancy-table__column-1 crancy-table__data-1 text-center" colspan="7">
+                            <h4 class="crancy-table__product-title text-center py-5">No existen bomberos registrados.</h4>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
 
     <div class="col-12">
         <div class="crancy-table crancy-table--v3 mg-top-30 p-5">

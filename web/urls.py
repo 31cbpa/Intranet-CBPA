@@ -51,4 +51,11 @@ urlpatterns = [
     # Admin
     path('server/', server, name='server'),
 
+    # Firefighters
+    path('firefighters/', list_firefighters, name='list_firefighters'),
+    path('firefighters/create/', create_firefighter, name='create_firefighter'),
+    path('firefighters/<int:id>/', detail_firefighter, name='detail_firefighter'),
+    path('firefighters/<int:id>/edit/', edit_firefighter, name='edit_firefighter'),
+    path('firefighters/<int:id>/remove/', remove_firefighter, name='remove_firefighter'),
+
 ]

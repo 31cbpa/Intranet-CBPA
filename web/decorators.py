@@ -22,3 +22,12 @@ def role_required(allowed_roles=None):
                 return redirect('login')
         return _wrapped_view
     return decorator
+
+def check_company_permission(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        company_id = kwargs.get('company_id')
+        if not request.user.userprofile.can_edit_company(company_id):
+            return HttpResponseForbidden("No tienes permiso para editar esta compañía")
+        return view_func(request, *args, **kwargs)
+    return wrapper

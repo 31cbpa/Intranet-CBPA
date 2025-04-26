@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ firefighter.first_name }} {{ firefighter.paternal_surname }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Ficha de Bombero</h1>
+    <div>
+        <a href="{% url 'firefighter_list' %}" class="btn btn-secondary">Volver a la lista</a>
+        {% if can_edit %}
+        <a href="{% url 'firefighter_edit' firefighter.pk %}" class="btn btn-warning">Editar</a>
+        {% endif %}
+        {% if user.groups.all.0.name == 'administrador' or user.groups.all.0.name == 'secretario_comandancia' %}
+        <a href="{% url 'firefighter_delete' firefighter.pk %}" class="btn btn-danger">Eliminar</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">Información personal</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <dl class="row">
+                    <dt class="col-sm-4">Nombre completo:</dt>
+                    <dd class="col-sm-8">{{ firefighter.first_name }} {{ firefighter.paternal_surname }} {{ firefighter.maternal_surname }}</dd>
+                    
+                    <dt class="col-sm-4">RUT:</dt>
+                    <dd class="col-sm-8">{{ firefighter.rut|default:"No registrado" }}</dd>
+                    
+                    <dt class="col-sm-4">Fecha de nacimiento:</dt>
+                    <dd class="col-sm-8">{{ firefighter.birth_date|date:"d/m/Y"|default:"No registrado" }}</dd>
+                    
+                    <dt class="col-sm-4">Género:</dt>
+                    <dd class="col-sm-8">{{ firefighter.get_gender_display|default:"No registrado" }}</dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <dl class="row">
+                    <dt class="col-sm-4">Domicilio:</dt>
+                    <dd class="col-sm-8">{{ firefighter.address|default:"No registrado" }}</dd>
+                    
+                    <dt class="col-sm-4">Comuna:</dt>
+                    <dd class="col-sm-8">{{ firefighter.commune|default:"No registrado" }}</dd>
+                    
+                    <dt class="col-sm-4">Teléfono:</dt>
+                    <dd class="col-sm-8">{{ firefighter.contact_number|default:"No registrado" }}</dd>
+                    
+                    <dt class="col-sm-4">Correo personal:</dt>
+                    <dd class="col-sm-8">{{ firefighter.personal_email|default:"No registrado" }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <h5 class="card-title mb-0">Información institucional</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <dl class="row">
+                    <dt class="col-sm-4">Compañía:</dt>
+                    <dd class="col-sm-8">{{ firefighter.company.name }}</dd>
+                    
+                    <dt class="col-sm-4">Número de registro:</dt>
+                    <dd class="col-sm-8">{{ firefighter.registration_number }}</dd>
+                    
+                    <dt class="col-sm-4">Fecha de ingreso:</dt>
+                    <dd class="col-sm-8">{{ firefighter.entry_date|date:"d/m/Y" }}</dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <dl class="row">
+                    <dt class="col-sm-4">Calidad:</dt>
+                    <dd class="col-sm-8">{{ firefighter.quality }}</dd>
+                    
+                    <dt class="col-sm-4">Cargo:</dt>
+                    <dd class="col-sm-8">{{ firefighter.position }}</dd>
+                    
+                    <dt class="col-sm-4">Correo institucional:</dt>
+                    <dd class="col-sm-8">{{ firefighter.email }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-info text-white">
+        <h5 class="card-title mb-0">Contactos de emergencia</h5>
+    </div>
+    <div class="card-body">
+        {% if emergency_contacts %}
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Parentesco</th>
+                            <th>Teléfono</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contact in emergency_contacts %}
+                        <tr>
+                            <td>{{ contact.first_name }} {{ contact.paternal_surname }} {{ contact.maternal_surname }}</td>
+                            <td>{{ contact.relationship }}</td>
+                            <td>{{ contact.contact_number }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                No hay contactos de emergencia registrados.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

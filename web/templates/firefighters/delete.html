@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Bombero{% endblock %}
+
+{% block content %}
+<div class="card mt-4">
+    <div class="card-header bg-danger text-white">
+        <h5 class="card-title mb-0">Confirmar eliminación</h5>
+    </div>
+    <div class="card-body">
+        <p>¿Estás seguro de que deseas eliminar al bombero <strong>{{ firefighter.first_name }} {{ firefighter.paternal_surname }} {{ firefighter.maternal_surname }}</strong>?</p>
+        <p class="text-danger">Esta acción no se puede deshacer y eliminará todos los datos asociados, incluyendo contactos de emergencia.</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'firefighter_detail' firefighter.pk %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Bomberos{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Bomberos</h1>
+    {% if can_edit %}
+    <a href="{% url 'firefighter_create' %}" class="btn btn-primary">Nuevo Bombero</a>
+    {% endif %}
+</div>
+
+{% if firefighters %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Nº Registro</th>
+                    <th>Nombre</th>
+                    <th>Compañía</th>
+                    <th>Cargo</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for firefighter in firefighters %}
+                <tr>
+                    <td>{{ firefighter.registration_number }}</td>
+                    <td>{{ firefighter.first_name }} {{ firefighter.paternal_surname }} {{ firefighter.maternal_surname }}</td>
+                    <td>{{ firefighter.company.name }}</td>
+                    <td>{{ firefighter.position }}</td>
+                    <td>{{ firefighter.email }}</td>
+                    <td>
+                        <a href="{% url 'firefighter_detail' firefighter.pk %}" class="btn btn-sm btn-info">Ver</a>
+                        {% if can_edit %}
+                        <a href="{% url 'firefighter_edit' firefighter.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        No hay bomberos registrados.
+    </div>
+{% endif %}
+{% endblock %}

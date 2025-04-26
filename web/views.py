@@ -15,7 +15,9 @@ from datetime import timedelta, datetime
 import psutil
 import platform
 import socket
-import random  # Agregar importación de random
+import random
+from .forms import FirefighterForm, EmergencyContactFormSet
+from django.db import transaction
 
 
 # Auth
@@ -102,8 +104,12 @@ def home(request):
     vehicles_count = Vehicle.objects.count()
     repairs_count = Repair.objects.count()
     parts_count = Part.objects.count()
+    firefighters_count = Firefighter.objects.count()
+    
+    # Últimos registros
     last_repairs = Repair.objects.all()
     last_vehicles = Vehicle.objects.all().order_by('-id')[:5]
+    last_firefighters = Firefighter.objects.all().order_by('-id')[:5]
 
     for vehicle in last_vehicles:
         vehicle.active_repairs_count = Repair.objects.filter(vehicle=vehicle, status='En progreso').count()
@@ -118,9 +124,11 @@ def home(request):
         'vehicles_count': vehicles_count,
         'repairs_count': repairs_count,
         'parts_count': parts_count,
+        'firefighters_count': firefighters_count,
         'total_cost': total_cost,
         'last_repairs': last_repairs,
         'last_vehicles': last_vehicles,
+        'last_firefighters': last_firefighters,
         'page_nav_title': 'Inicio'
     }
     return render(request, 'home.html', context)
@@ -574,3 +582,170 @@ def server(request):
     print("Contexto:", context)  # Esto imprimirá los datos en la consola
 
     return render(request, "server/home.html", context)
+
+# Bomberos
+@role_required(allowed_roles=['Administrador', 'Superintendente', 'Secretario Comandancia', 'Secretario Compañía'])
+@login_required(login_url='login')
+def list_firefighters(request):
+    user_groups = [group.name for group in request.user.groups.all()]
+    
+    # Determinar qué bomberos mostrar según el rol del usuario
+    if any(role in user_groups for role in ['Administrador', 'Superintendente', 'Secretario Comandancia']):
+        # Estos roles pueden ver todos los bomberos
+        firefighters = Firefighter.objects.all()
+    elif 'Secretario Compañía' in user_groups:
+        # Secretarios de compañía solo ven bomberos de su compañía
+        company = request.user.userprofile.company
+        if company:
+            firefighters = Firefighter.objects.filter(company=company)
+        else:
+            firefighters = Firefighter.objects.none()
+    else:
+        firefighters = Firefighter.objects.none()
+    
+    context = {
+        'firefighters': firefighters,
+        'can_edit': any(role in user_groups for role in ['Administrador', 'Secretario Comandancia', 'Secretario Compañía']),
+        'page_nav_title': 'Gestor de Bomberos'
+    }
+    return render(request, 'firefighters/list.html', context)
+
+@login_required(login_url='login')
+def detail_firefighter(request, id):
+    firefighter = Firefighter.objects.get(id=id)
+    
+    # Verificar permisos
+    user_groups = [group.name for group in request.user.groups.all()]
+    can_view = any(role in user_groups for role in ['Administrador', 'Superintendente', 'Secretario Comandancia'])
+    
+    if not can_view and 'Secretario Compañía' in user_groups:
+        # Verificar si el secretario pertenece a la misma compañía
+        company = request.user.userprofile.company
+        if company and firefighter.company == company:
+            can_view = True
+    
+    if not can_view:
+        return redirect('home')
+    
+    emergency_contacts = firefighter.emergency_contacts.all()
+    
+    context = {
+        'firefighter': firefighter,
+        'emergency_contacts': emergency_contacts,
+        'can_edit': any(role in user_groups for role in ['Administrador', 'Secretario Comandancia', 'Secretario Compañía']),
+        'page_nav_title': 'Bombero #BOM-' + str(firefighter.id)
+    }
+    return render(request, 'firefighters/detail.html', context)
+
+@role_required(allowed_roles=['Administrador', 'Secretario Comandancia', 'Secretario Compañía'])
+@login_required(login_url='login')
+@transaction.atomic
+def create_firefighter(request):
+    user_groups = [group.name for group in request.user.groups.all()]
+    
+    # Determinar compañías disponibles para el formulario
+    if 'Secretario Compañía' in user_groups:
+        # Secretarios de compañía solo pueden asignar a su compañía
+        company = request.user.userprofile.company
+        initial = {'company': company} if company else {}
+        form = FirefighterForm(initial=initial)
+        if company:
+            form.fields['company'].queryset = Company.objects.filter(pk=company.pk)
+            form.fields['company'].widget.attrs['readonly'] = True
+    else:
+        # Roles que pueden elegir cualquier compañía
+        form = FirefighterForm()
+    
+    if request.method == 'POST':
+        form = FirefighterForm(request.POST)
+        formset = EmergencyContactFormSet(request.POST)
+        
+        if form.is_valid() and formset.is_valid():
+            # Si es secretario, forzar la compañía
+            if 'Secretario Compañía' in user_groups and request.user.userprofile.company:
+                firefighter = form.save(commit=False)
+                firefighter.company = request.user.userprofile.company
+                firefighter.save()
+            else:
+                firefighter = form.save()
+                
+            # Guardar contactos de emergencia
+            formset = EmergencyContactFormSet(request.POST, instance=firefighter)
+            if formset.is_valid():
+                formset.save()
+                
+            messages.success(request, '¡Bombero creado correctamente!', extra_tags='alert-success')
+            return redirect('detail_firefighter', id=firefighter.id)
+    else:
+        formset = EmergencyContactFormSet()
+    
+    context = {
+        'form': form,
+        'formset': formset,
+        'title': 'Crear Bombero',
+        'page_nav_title': 'Registro de Bombero'
+    }
+    return render(request, 'firefighters/form.html', context)
+
+@role_required(allowed_roles=['Administrador', 'Secretario Comandancia', 'Secretario Compañía'])
+@login_required(login_url='login')
+@transaction.atomic
+def edit_firefighter(request, id):
+    firefighter = Firefighter.objects.get(id=id)
+    user_groups = [group.name for group in request.user.groups.all()]
+    
+    # Verificar permisos de edición para secretarios de compañía
+    if 'Secretario Compañía' in user_groups:
+        company = request.user.userprofile.company
+        if not company or firefighter.company != company:
+            return redirect('home')
+    
+    if request.method == 'POST':
+        form = FirefighterForm(request.POST, instance=firefighter)
+        formset = EmergencyContactFormSet(request.POST, instance=firefighter)
+        
+        if form.is_valid() and formset.is_valid():
+            # Preservar la compañía original si es secretario de compañía
+            if 'Secretario Compañía' in user_groups:
+                firefighter = form.save(commit=False)
+                firefighter.company = request.user.userprofile.company
+                firefighter.save()
+            else:
+                firefighter = form.save()
+                
+            formset.save()
+            messages.success(request, '¡Bombero actualizado correctamente!', extra_tags='alert-success')
+            return redirect('detail_firefighter', id=firefighter.id)
+    else:
+        form = FirefighterForm(instance=firefighter)
+        formset = EmergencyContactFormSet(instance=firefighter)
+        
+        # Bloquear cambio de compañía para secretarios
+        if 'Secretario Compañía' in user_groups:
+            form.fields['company'].widget.attrs['readonly'] = True
+            form.fields['company'].queryset = Company.objects.filter(pk=firefighter.company.pk)
+    
+    context = {
+        'form': form,
+        'formset': formset,
+        'firefighter': firefighter,
+        'title': 'Editar Bombero',
+        'page_nav_title': 'Bombero #BOM-' + str(firefighter.id)
+    }
+    return render(request, 'firefighters/form.html', context)
+
+@role_required(allowed_roles=['Administrador', 'Secretario Comandancia'])
+@login_required(login_url='login')
+def remove_firefighter(request, id):
+    firefighter = Firefighter.objects.get(id=id)
+    
+    if request.method == 'POST':
+        firefighter.delete()
+        messages.success(request, '¡Bombero eliminado correctamente!', extra_tags='alert-success')
+        return redirect('list_firefighters')
+    
+    context = {
+        'firefighter': firefighter,
+        'page_nav_title': 'Eliminar Bombero'
+    }
+    return render(request, 'firefighters/delete.html', context)
