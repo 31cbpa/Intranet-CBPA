@@ -19,7 +19,6 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'cbpa-4myhy.ondigitalocean.app,l
 
 # Application definition
 INSTALLED_APPS = [
-    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -110,51 +109,3 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-JAZZMIN_SETTINGS = {
-    "site_title": "Intranet CBPA Admin",  # Título de la pestaña del navegador
-    "site_header": "Intranet CBPA",  # Encabezado del administrador
-    "site_brand": "CBPA",  # Marca en la barra superior
-    "site_logo": "img/logo-cbpa.png",
-    "welcome_sign": "Bienvenido al Administrador de CBPA",  # Mensaje de bienvenida
-    "copyright": "CBPA © 2025",
-    "search_model": "auth.User",  # Modelo para la barra de búsqueda
-    "topmenu_links": [
-        {"name": "Inicio", "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"name": "Documentación", "url": "https://docs.djangoproject.com/", "new_window": True},
-    ],
-    "usermenu_links": 
-    [
-        {"name": "Soporte", "url": "https://wa.me/56979843069", "new_window": True},
-    ],
-    # Personalización de colores y diseño
-    "theme": "darkly",  # Tema oscuro basado en Bootswatch
-    "primary_color": "#FFD700",  # Dorado como color primario
-    "secondary_color": "#333333",  # Gris oscuro como color secundario
-    "navbar": "navbar-dark bg-dark",  # Barra de navegación oscura
-    "sidebar": "sidebar-dark-primary",  # Barra lateral oscura con color primario
-    "button_classes": {
-        "primary": "btn-warning",  # Botones primarios con estilo dorado
-        "secondary": "btn-secondary",
-        "info": "btn-info",
-        "warning": "btn-warning",
-        "danger": "btn-danger",
-        "success": "btn-success",
-    },
-    # Opciones de navegación
-    "show_sidebar": True,  # Mostrar la barra lateral
-    "navigation_expanded": True,  # Expandir la navegación por defecto
-    "hide_apps": [],  # Ocultar aplicaciones específicas (vacío para mostrar todas)
-    "hide_models": [],  # Ocultar modelos específicos (vacío para mostrar todos)
-    "order_with_respect_to": ["auth", "web"],  # Ordenar aplicaciones
-    # Íconos personalizados
-    "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
-        "auth.Group": "fas fa-users",
-        "web.TuModelo": "fas fa-database",  # Reemplaza 'TuModelo' con tus modelos
-    },
-    # Archivos personalizados
-    "custom_css": "custom.css",  # Archivo CSS personalizado
-    "custom_js": None,  # Archivo JS personalizado (si es necesario)
-}

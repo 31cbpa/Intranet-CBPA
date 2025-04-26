@@ -7,7 +7,6 @@ dj-database-url==2.3.0
 Django==5.2
 django-hijack==3.4.2
 django-impersonate==1.9.2
-django-jazzmin==3.0.1
 django-su==1.0.0
 django-widget-tweaks==1.4.12
 et-xmlfile==1.1.0
