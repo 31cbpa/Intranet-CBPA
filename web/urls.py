@@ -50,6 +50,10 @@ urlpatterns = [
     
     # Admin
     path('server/', server, name='server'),
+    path('server-api/status/', server_api_status, name='server_api_status'),
+    path('server-api/disk/', server_api_disk, name='server_api_disk'),
+    path('server-api/network/', server_api_network, name='server_api_network'),
+    path('server-api/logs/', server_api_logs, name='server_api_logs'),
 
     # Firefighters
     path('firefighters/', list_firefighters, name='list_firefighters'),

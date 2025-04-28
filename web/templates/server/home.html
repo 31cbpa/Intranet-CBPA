@@ -1,18 +1,1255 @@
 {% extends 'layout/base.html' %}
+{% load static %}
 
-{% block page_title %}Información del Servidor{% endblock %}
+{% block page_title %}Panel de Administración del Servidor{% endblock %}
 
 {% block main_content %}
-    <h1>Detalles del Servidor</h1>
-    <p><strong>Hostname:</strong> {{ hostname }}</p>
-    <p><strong>IP Address:</strong> {{ ip_address }}</p>
-    <p><strong>Plataforma:</strong> {{ platform }}</p>
-    <p><strong>Sistema Operativo:</strong> {{ os }}</p>
-    <p><strong>Versión del SO:</strong> {{ os_version }}</p>
-    <p><strong>Núcleos CPU:</strong> {{ cpu_cores }}</p>
-    <p><strong>Uso de CPU:</strong> {{ cpu_usage }}%</p>
-    <p><strong>Memoria total:</strong> {{ total_memory }} GB</p>
-    <p><strong>Memoria usada:</strong> {{ used_memory }} GB</p>
-    <p><strong>Uso de memoria:</strong> {{ memory_percent }}%</p>
-    <p><strong>Hora de inicio:</strong> {{ boot_time }}</p>
-{% endblock %}
+<div class="row">
+    <div class="col-12 mg-top-30">
+        <div class="crancy-pbreadcrumb">
+            <h2>Panel de Administración del Servidor</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Principal -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="crancy-card">
+            <div class="crancy-card-header">
+                <h4 class="crancy-card-title">Estado General del Sistema</h4>
+            </div>
+            <div class="crancy-card-body">
+                <div class="row">
+                    <!-- Estado del servidor -->
+                    <div class="col-md-3">
+                        <div class="crancy-history crancy-history--ticket h-100 bg-success-soft">
+                            <div class="crancy-history__main">
+                                <div class="crancy-history__content mb-0">
+                                    <h4 class="crancy-history__number ms-3">
+                                        Online
+                                        <span>Estado del Servidor</span>
+                                    </h4>
+                                    <div class="crancy-history__icon crancy-color1__opacity--bg me-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M21 14c0-.55-.45-1-1-1h-2v2h2c.55 0 1-.45 1-1m-1 3h-2v2h2c.55 0 1-.45 1-1s-.45-1-1-1m-8-3h-2v4h2c0 1.1.9 2 2 2h3v-8h-3c-1.1 0-2 .9-2 2M5 13c0-1.1.9-2 2-2h1.5c1.93 0 3.5-1.57 3.5-3.5S10.43 4 8.5 4H5c-.55 0-1 .45-1 1s.45 1 1 1h3.5c.83 0 1.5.67 1.5 1.5S9.33 9 8.5 9H7c-2.21 0-4 1.79-4 4s1.79 4 4 4h2v-2H7c-1.1 0-2-.9-2-2"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CPU -->
+                    <div class="col-md-3">
+                        <div class="crancy-history crancy-history--ticket h-100">
+                            <div class="crancy-history__main">
+                                <div class="crancy-history__content mb-0">
+                                    <h4 class="crancy-history__number ms-3">
+                                        {{ cpu_usage }}%
+                                        <span>Uso de CPU</span>
+                                    </h4>
+                                    <div class="crancy-history__icon {% if cpu_usage > 80 %}crancy-color3__opacity--bg{% elif cpu_usage > 50 %}crancy-color2__opacity--bg{% else %}crancy-color1__opacity--bg{% endif %} me-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M15 9H9v6h6zm-2 4h-2v-2h2zm8-2V9h-2V7c0-1.1-.9-2-2-2h-2V3h-2v2h-2V3H9v2H7c-1.1 0-2 .9-2 2v2H3v2h2v2H3v2h2v2c0 1.1.9 2 2 2h2v2h2v-2h2v2h2v-2h2c1.1 0 2-.9 2-2v-2h2v-2h-2v-2zm-4 6H7V7h10z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Memoria -->
+                    <div class="col-md-3">
+                        <div class="crancy-history crancy-history--ticket h-100">
+                            <div class="crancy-history__main">
+                                <div class="crancy-history__content mb-0">
+                                    <h4 class="crancy-history__number ms-3">
+                                        {{ memory_percent }}%
+                                        <span>Uso de Memoria</span>
+                                    </h4>
+                                    <div class="crancy-history__icon {% if memory_percent > 80 %}crancy-color3__opacity--bg{% elif memory_percent > 50 %}crancy-color2__opacity--bg{% else %}crancy-color1__opacity--bg{% endif %} me-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M17 17H7V7h10m0 13H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3M15 9h-2V8h-2v1H9v2h4v1h-2.03v.03H9V14h2v1h2v-1h2v-2h-4v-1h2z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tiempo de actividad -->
+                    <div class="col-md-3">
+                        <div class="crancy-history crancy-history--ticket h-100">
+                            <div class="crancy-history__main">
+                                <div class="crancy-history__content mb-0">
+                                    <h4 class="crancy-history__number ms-3">
+                                        <span id="uptime-counter">Calculando...</span>
+                                        <span>Tiempo activo</span>
+                                    </h4>
+                                    <div class="crancy-history__icon crancy-color4__opacity--bg me-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                                            <path fill="currentColor" d="M12 20a8 8 0 0 0 8-8a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10a10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67l-.75 1.23L11 13V7z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <!-- Gráfico del Uso de CPU -->
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="cpuChart" height="200"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Gráfico del Uso de Memoria -->
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="memoryChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Información del Sistema -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="crancy-card">
+            <div class="crancy-card-header">
+                <h4 class="crancy-card-title">Información del Sistema</h4>
+            </div>
+            <div class="crancy-card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr>
+                                <td width="40%"><strong>Hostname</strong></td>
+                                <td>{{ hostname }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sistema Operativo</strong></td>
+                                <td>{{ os }} {{ os_version }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Plataforma</strong></td>
+                                <td>{{ platform }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Procesador</strong></td>
+                                <td>{{ cpu_cores }} núcleos</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hora de inicio</strong></td>
+                                <td>{{ boot_time }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="crancy-card">
+            <div class="crancy-card-header">
+                <h4 class="crancy-card-title">Uso de Recursos</h4>
+            </div>
+            <div class="crancy-card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr>
+                                <td width="40%"><strong>Memoria Total</strong></td>
+                                <td>{{ total_memory }} GB</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Memoria Usada</strong></td>
+                                <td>{{ used_memory }} GB ({{ memory_percent }}%)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Memoria Disponible</strong></td>
+                                <td>{{ free_memory }} GB</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Uso de CPU</strong></td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar {% if cpu_usage > 80 %}bg-danger{% elif cpu_usage > 50 %}bg-warning{% else %}bg-success{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ cpu_usage }}%"
+                                             aria-valuenow="{{ cpu_usage }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                            {{ cpu_usage }}%
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Uso de Memoria</strong></td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar {% if memory_percent > 80 %}bg-danger{% elif memory_percent > 50 %}bg-warning{% else %}bg-success{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ memory_percent }}%"
+                                             aria-valuenow="{{ memory_percent }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                            {{ memory_percent }}%
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de Red y Seguridad -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="crancy-card">
+            <div class="crancy-card-header d-flex justify-content-between">
+                <h4 class="crancy-card-title">Información de Red y Seguridad</h4>
+                <button id="toggleNetworkInfo" class="btn btn-sm btn-primary">Mostrar información</button>
+            </div>
+            <div class="crancy-card-body" id="networkInfoSection" style="display: none;">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr>
+                                <td width="40%"><strong>Dirección IP</strong></td>
+                                <td>{{ ip_address }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Máscara de Red</strong></td>
+                                <td id="network-mask">Cargando...</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gateway</strong></td>
+                                <td id="network-gateway">Cargando...</td>
+                            </tr>
+                            <tr>
+                                <td><strong>DNS</strong></td>
+                                <td id="network-dns">Cargando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h5 class="mt-4">Puertos Activos</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="ports-table">
+                        <thead>
+                            <tr>
+                                <th>Puerto</th>
+                                <th>Protocolo</th>
+                                <th>Servicio</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center">Cargando información de puertos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de Almacenamiento -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="crancy-card">
+            <div class="crancy-card-header d-flex justify-content-between">
+                <h4 class="crancy-card-title">Almacenamiento</h4>
+                <button id="toggleStorageInfo" class="btn btn-sm btn-primary">Mostrar información</button>
+            </div>
+            <div class="crancy-card-body" id="storageInfoSection" style="display: none;">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="disk-table">
+                                <thead>
+                                    <tr>
+                                        <th>Punto de montaje</th>
+                                        <th>Total</th>
+                                        <th>Usado</th>
+                                        <th>Disponible</th>
+                                        <th>Uso (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" class="text-center">Cargando información de almacenamiento...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <canvas id="diskChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de Base de Datos -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="crancy-card">
+            <div class="crancy-card-header d-flex justify-content-between">
+                <h4 class="crancy-card-title">Base de Datos</h4>
+                <button id="toggleDbInfo" class="btn btn-sm btn-primary">Mostrar información</button>
+            </div>
+            <div class="crancy-card-body" id="dbInfoSection" style="display: none;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <h5>Estado de PostgreSQL</h5>
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="status-dot bg-success me-2"></div>
+                                <span>Servicio activo</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <td width="40%"><strong>Versión</strong></td>
+                                            <td id="db-version">Cargando...</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Conexiones activas</strong></td>
+                                            <td id="db-connections">Cargando...</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Tamaño total</strong></td>
+                                            <td id="db-size">Cargando...</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Último backup</strong></td>
+                                            <td id="db-backup">Cargando...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Bases de datos activas</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="db-list-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Tamaño</th>
+                                        <th>Conexiones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3" class="text-center">Cargando bases de datos...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección de Mantenimiento -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="crancy-card">
+            <div class="crancy-card-header">
+                <h4 class="crancy-card-title">Mantenimiento del Sistema</h4>
+            </div>
+            <div class="crancy-card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="maintenance-card text-center">
+                            <div class="maintenance-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M13 3h-2v10h2zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/>
+                                </svg>
+                            </div>
+                            <h5>Reiniciar Servidor</h5>
+                            <button class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#restartModal">Reiniciar</button>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="maintenance-card text-center">
+                            <div class="maintenance-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M12 3a9 9 0 0 0-9 9H0l4 4l4-4H5a7 7 0 0 1 7-7a7 7 0 0 1 7 7a7 7 0 0 1-7 7v2a9 9 0 0 0 9-9a9 9 0 0 0-9-9m-1 5v5l4.03 2.47l.7-1.16l-3.23-1.98V8z"/>
+                                </svg>
+                            </div>
+                            <h5>Crear Backup</h5>
+                            <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#backupModal">Backup</button>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="maintenance-card text-center">
+                            <div class="maintenance-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2m0 17H7V6h10zm-1-7.95l-1.41-1.41l-3.54 3.54l-1.41-1.41l-1.41 1.41L11.05 15z"/>
+                                </svg>
+                            </div>
+                            <h5>Actualizar Sistema</h5>
+                            <button class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#updateModal">Actualizar</button>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="maintenance-card text-center">
+                            <div class="maintenance-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z"/>
+                                </svg>
+                            </div>
+                            <h5>Ver Logs del Sistema</h5>
+                            <button class="btn btn-info mt-2" id="viewLogsBtn">Ver Logs</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Reinicio -->
+<div class="modal fade" id="restartModal" tabindex="-1" aria-labelledby="restartModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="restartModalLabel">Reiniciar Servidor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <strong>¡Advertencia!</strong> Reiniciar el servidor interrumpirá todos los servicios. Asegúrese de que todos los usuarios hayan sido notificados.
+                </div>
+                <form id="restartForm">
+                    <div class="mb-3">
+                        <label for="restartType" class="form-label">Tipo de reinicio</label>
+                        <select class="form-select" id="restartType">
+                            <option value="soft">Reinicio de servicios</option>
+                            <option value="hard">Reinicio completo</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restartTime" class="form-label">Programar reinicio</label>
+                        <select class="form-select" id="restartTime">
+                            <option value="now">Inmediatamente</option>
+                            <option value="hour">En 1 hora</option>
+                            <option value="midnight">Esta noche (00:00)</option>
+                            <option value="custom">Personalizado</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="customTimeDiv" style="display: none;">
+                        <label for="customTime" class="form-label">Fecha y hora</label>
+                        <input type="datetime-local" class="form-control" id="customTime">
+                    </div>
+                    <div class="mb-3">
+                        <label for="restartReason" class="form-label">Motivo del reinicio</label>
+                        <textarea class="form-control" id="restartReason" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmRestart">Confirmar Reinicio</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Backup -->
+<div class="modal fade" id="backupModal" tabindex="-1" aria-labelledby="backupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="backupModalLabel">Crear Backup del Sistema</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="backupForm">
+                    <div class="mb-3">
+                        <label for="backupType" class="form-label">Tipo de backup</label>
+                        <select class="form-select" id="backupType">
+                            <option value="full">Completo (sistema y base de datos)</option>
+                            <option value="db">Solo base de datos</option>
+                            <option value="files">Solo archivos</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="backupLocation" class="form-label">Ubicación</label>
+                        <select class="form-select" id="backupLocation">
+                            <option value="local">Almacenamiento local</option>
+                            <option value="remote">Servidor remoto</option>
+                            <option value="cloud">Nube</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="backupDescription" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="backupDescription" rows="2"></textarea>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="compressBackup" checked>
+                        <label class="form-check-label" for="compressBackup">
+                            Comprimir backup
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmBackup">Iniciar Backup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Actualización -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Actualizar Sistema</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="updatesAvailable">
+                    <p>Actualizaciones disponibles:</p>
+                    <ul class="list-group mb-3" id="updatesList">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Actualizaciones de seguridad
+                            <span class="badge bg-primary rounded-pill">3</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Actualizaciones del sistema
+                            <span class="badge bg-primary rounded-pill">2</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Actualizaciones de software
+                            <span class="badge bg-primary rounded-pill">5</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="createBackupBeforeUpdate" checked>
+                        <label class="form-check-label" for="createBackupBeforeUpdate">
+                            <input class="form-check-input" type="checkbox" id="createBackupBeforeUpdate" checked>
+                       <label class="form-check-label" for="createBackupBeforeUpdate">
+                           Crear backup antes de actualizar
+                       </label>
+                   </div>
+                   
+                   <div class="form-check mb-3">
+                       <input class="form-check-input" type="checkbox" id="autoRestartAfterUpdate" checked>
+                       <label class="form-check-label" for="autoRestartAfterUpdate">
+                           Reiniciar automáticamente después de la actualización
+                       </label>
+                   </div>
+               </div>
+           </div>
+           <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+               <button type="button" class="btn btn-success" id="confirmUpdate">Instalar Actualizaciones</button>
+           </div>
+       </div>
+   </div>
+</div>
+
+<!-- Modal de Logs -->
+<div class="modal fade" id="logsModal" tabindex="-1" aria-labelledby="logsModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-xl">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h5 class="modal-title" id="logsModalLabel">Logs del Sistema</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+           </div>
+           <div class="modal-body">
+               <div class="d-flex justify-content-between mb-3">
+                   <div>
+                       <select class="form-select" id="logType">
+                           <option value="system">Sistema</option>
+                           <option value="application">Aplicación</option>
+                           <option value="security">Seguridad</option>
+                           <option value="nginx">Nginx</option>
+                           <option value="postgresql">PostgreSQL</option>
+                       </select>
+                   </div>
+                   <div>
+                       <select class="form-select" id="logLevel">
+                           <option value="all">Todos los niveles</option>
+                           <option value="error">Error</option>
+                           <option value="warning">Advertencia</option>
+                           <option value="info">Información</option>
+                           <option value="debug">Debug</option>
+                       </select>
+                   </div>
+                   <div>
+                       <button class="btn btn-primary" id="refreshLogs">Actualizar</button>
+                       <button class="btn btn-secondary" id="downloadLogs">Descargar</button>
+                   </div>
+               </div>
+               
+               <div class="logs-container" style="height: 400px; overflow-y: auto; background: #1e1e1e; color: #f0f0f0; padding: 10px; border-radius: 5px; font-family: monospace;">
+                   <pre id="logsContent">Cargando logs...</pre>
+               </div>
+           </div>
+           <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+           </div>
+       </div>
+   </div>
+</div>
+
+<!-- CSS personalizado -->
+<style>
+   .maintenance-card {
+       background-color: white;
+       border-radius: 10px;
+       padding: 20px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+       height: 100%;
+   }
+   
+   .maintenance-icon {
+       color: #3498db;
+       margin-bottom: 15px;
+   }
+   
+   .status-dot {
+       width: 12px;
+       height: 12px;
+       border-radius: 50%;
+   }
+   
+   .bg-success {
+       background-color: #2ecc71 !important;
+   }
+   
+   .bg-warning {
+       background-color: #f39c12 !important;
+   }
+   
+   .bg-danger {
+       background-color: #e74c3c !important;
+   }
+   
+   .chart-container {
+       position: relative;
+       margin: auto;
+       height: 200px;
+   }
+   
+   .progress {
+       height: 20px;
+       border-radius: 5px;
+   }
+   
+   .progress-bar {
+       line-height: 20px;
+       font-size: 12px;
+   }
+   
+   .bg-success-soft {
+       background-color: rgba(46, 204, 113, 0.2);
+   }
+</style>
+
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Variables globales
+        const bootTime = new Date("{{ boot_time }}");
+        
+        // Calcular y mostrar tiempo de actividad
+        updateUptimeCounter();
+        setInterval(updateUptimeCounter, 1000);
+        
+        // Inicializar gráficos
+        initCharts();
+        
+        // Cargar datos adicionales
+        loadAdditionalData();
+        
+        // Actualizar datos periódicamente
+        setInterval(loadAdditionalData, 300000); // Actualiza cada 30 segundos
+        
+        // Event listeners para toggles
+        document.getElementById('toggleNetworkInfo').addEventListener('click', function() {
+            toggleSection('networkInfoSection', 'toggleNetworkInfo');
+        });
+        
+        document.getElementById('toggleStorageInfo').addEventListener('click', function() {
+            toggleSection('storageInfoSection', 'toggleStorageInfo');
+        });
+        
+        document.getElementById('toggleDbInfo').addEventListener('click', function() {
+            toggleSection('dbInfoSection', 'toggleDbInfo');
+        });
+        
+        // Event listener para el modal de reinicio
+        document.getElementById('restartTime').addEventListener('change', function() {
+            if (this.value === 'custom') {
+                document.getElementById('customTimeDiv').style.display = 'block';
+            } else {
+                document.getElementById('customTimeDiv').style.display = 'none';
+            }
+        });
+        
+        // Event listener para botón de logs
+        document.getElementById('viewLogsBtn').addEventListener('click', function() {
+            // Cargar logs y mostrar modal
+            fetch('/server-api/logs/?type=system&level=all')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('logsContent').textContent = data.logs;
+                    const logsModal = new bootstrap.Modal(document.getElementById('logsModal'));
+                    logsModal.show();
+                })
+                .catch(error => {
+                    console.error('Error cargando logs:', error);
+                    // Si falla, mostrar logs de ejemplo
+                    loadSystemLogs();
+                    const logsModal = new bootstrap.Modal(document.getElementById('logsModal'));
+                    logsModal.show();
+                });
+        });
+        
+        // Event listeners para los botones de confirmación
+        document.getElementById('confirmRestart').addEventListener('click', function() {
+            // Aquí iría la lógica para reiniciar el servidor
+            alert('Esta funcionalidad enviaría la petición al API de reinicio');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('restartModal'));
+            modal.hide();
+        });
+        
+        document.getElementById('confirmBackup').addEventListener('click', function() {
+            // Aquí iría la lógica para realizar el backup
+            alert('Esta funcionalidad enviaría la petición al API de backup');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('backupModal'));
+            modal.hide();
+        });
+        
+        document.getElementById('confirmUpdate').addEventListener('click', function() {
+            // Aquí iría la lógica para actualizar el sistema
+            alert('Esta funcionalidad enviaría la petición al API de actualización');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('updateModal'));
+            modal.hide();
+        });
+        
+        // Eventos para los logs
+        document.getElementById('logType').addEventListener('change', function() {
+            loadSystemLogsFromAPI();
+        });
+        
+        document.getElementById('logLevel').addEventListener('change', function() {
+            loadSystemLogsFromAPI();
+        });
+        
+        document.getElementById('refreshLogs').addEventListener('click', function() {
+            loadSystemLogsFromAPI();
+        });
+        
+        document.getElementById('downloadLogs').addEventListener('click', function() {
+            const logContent = document.getElementById('logsContent').textContent;
+            const blob = new Blob([logContent], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'server-logs.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+        
+        // Funciones de utilidad
+        function updateUptimeCounter() {
+            const now = new Date();
+            const diff = now - bootTime;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('uptime-counter').textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+        
+        function toggleSection(sectionId, buttonId) {
+            const section = document.getElementById(sectionId);
+            const button = document.getElementById(buttonId);
+            
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                button.textContent = 'Ocultar información';
+            } else {
+                section.style.display = 'none';
+                button.textContent = 'Mostrar información';
+            }
+        }
+        
+        function initCharts() {
+            // Crear gráfico de CPU
+            const cpuCtx = document.getElementById('cpuChart').getContext('2d');
+            const cpuChart = new Chart(cpuCtx, {
+                type: 'line',
+                data: {
+                    labels: Array(30).fill('').map((_, i) => `-${30-i} sec`),
+                    datasets: [{
+                        label: 'Uso de CPU (%)',
+                        data: generateRandomData(30, {{ cpu_usage }}, 10),
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Uso de CPU en tiempo real'
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Porcentaje de uso'
+                            }
+                        }
+                    }
+                }
+            });
+            // Guardar referencia al gráfico
+            document.getElementById('cpuChart').chart = cpuChart;
+            
+            // Crear gráfico de memoria
+            const memoryCtx = document.getElementById('memoryChart').getContext('2d');
+            const memoryChart = new Chart(memoryCtx, {
+                type: 'line',
+                data: {
+                    labels: Array(30).fill('').map((_, i) => `-${30-i} sec`),
+                    datasets: [{
+                        label: 'Uso de Memoria (%)',
+                        data: generateRandomData(30, {{ memory_percent }}, 5),
+                        backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Uso de Memoria en tiempo real'
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Porcentaje de uso'
+                            }
+                        }
+                    }
+                }
+            });
+            // Guardar referencia al gráfico
+            document.getElementById('memoryChart').chart = memoryChart;
+            
+            // Crear gráfico de disco
+            const diskCtx = document.getElementById('diskChart').getContext('2d');
+            const diskChart = new Chart(diskCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Usado', 'Disponible'],
+                    datasets: [{
+                        data: [75, 25],
+                        backgroundColor: ['rgba(231, 76, 60, 0.7)', 'rgba(46, 204, 113, 0.7)'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Uso de Disco'
+                        }
+                    }
+                }
+            });
+            // Guardar referencia al gráfico
+            document.getElementById('diskChart').chart = diskChart;
+            
+            // Actualizar gráficos con datos reales
+            updateChartsWithRealData();
+            
+            // Programar actualizaciones periódicas de los gráficos
+            setInterval(updateChartsWithRealData, 300000); // Cada 5 segundos
+        }
+        
+        function updateChartsWithRealData() {
+            // Obtener datos en tiempo real
+            fetch('/server-api/status/')
+                .then(response => response.json())
+                .then(data => {
+                    // Actualizar gráfico de CPU
+                    const cpuChart = document.getElementById('cpuChart').chart;
+                    cpuChart.data.datasets[0].data.shift();
+                    cpuChart.data.datasets[0].data.push(data.cpu_usage);
+                    cpuChart.update();
+                    
+                    // Actualizar gráfico de memoria
+                    const memoryChart = document.getElementById('memoryChart').chart;
+                    memoryChart.data.datasets[0].data.shift();
+                    memoryChart.data.datasets[0].data.push(data.memory_percent);
+                    memoryChart.update();
+                    
+                    // Actualizar barras de progreso
+                    updateProgressBars(data.cpu_usage, data.memory_percent);
+                })
+                .catch(error => {
+                    console.error('Error actualizando gráficos:', error);
+                    // Si falla, usar datos simulados
+                    const cpuChart = document.getElementById('cpuChart').chart;
+                    cpuChart.data.datasets[0].data.shift();
+                    cpuChart.data.datasets[0].data.push(randomValue({{ cpu_usage }}, 10));
+                    cpuChart.update();
+                    
+                    const memoryChart = document.getElementById('memoryChart').chart;
+                    memoryChart.data.datasets[0].data.shift();
+                    memoryChart.data.datasets[0].data.push(randomValue({{ memory_percent }}, 5));
+                    memoryChart.update();
+                });
+        }
+        
+        function updateProgressBars(cpuUsage, memoryPercent) {
+            // Actualizar barra de progreso de CPU
+            const cpuBar = document.querySelector('tr:has(td:contains("Uso de CPU")) .progress-bar');
+            if (cpuBar) {
+                cpuBar.style.width = `${cpuUsage}%`;
+                cpuBar.textContent = `${cpuUsage}%`;
+                cpuBar.className = `progress-bar ${cpuUsage > 80 ? 'bg-danger' : cpuUsage > 50 ? 'bg-warning' : 'bg-success'}`;
+            }
+            
+            // Actualizar barra de progreso de memoria
+            const memoryBar = document.querySelector('tr:has(td:contains("Uso de Memoria")) .progress-bar');
+            if (memoryBar) {
+                memoryBar.style.width = `${memoryPercent}%`;
+                memoryBar.textContent = `${memoryPercent}%`;
+                memoryBar.className = `progress-bar ${memoryPercent > 80 ? 'bg-danger' : memoryPercent > 50 ? 'bg-warning' : 'bg-success'}`;
+            }
+        }
+        
+        function loadAdditionalData() {
+            // Cargar datos desde API de estado
+            fetch('/server-api/status/')
+                .then(response => response.json())
+                .then(data => {
+                    // Actualizar etiquetas con datos en tiempo real
+                    updateStatusLabels(data);
+                })
+                .catch(error => {
+                    console.error('Error cargando datos de estado:', error);
+                });
+            
+            // Cargar datos de disco
+            fetch('/server-api/disk/')
+                .then(response => response.json())
+                .then(data => {
+                    updateDiskInfo(data.partitions);
+                })
+                .catch(error => {
+                    console.error('Error cargando datos de disco:', error);
+                    // Si falla, usar datos simulados
+                    const diskData = [
+                        { mount: '/', total: '50 GB', used: '32 GB', free: '18 GB', percent: 64 },
+                        { mount: '/var', total: '100 GB', used: '78 GB', free: '22 GB', percent: 78 },
+                        { mount: '/home', total: '200 GB', used: '145 GB', free: '55 GB', percent: 72.5 },
+                        { mount: '/opt', total: '80 GB', used: '12 GB', free: '68 GB', percent: 15 }
+                    ];
+                    updateDiskInfo(diskData);
+                });
+            
+            // Cargar datos de red
+            fetch('/server-api/network/')
+                .then(response => response.json())
+                .then(data => {
+                    updateNetworkInfo(data);
+                })
+                .catch(error => {
+                    console.error('Error cargando datos de red:', error);
+                    // Si falla, usar datos simulados
+                    const networkData = {
+                        interfaces: [
+                            {
+                                name: 'eth0',
+                                ip: '{{ ip_address }}',
+                                netmask: '255.255.255.0',
+                                gateway: '10.244.11.1'
+                            }
+                        ],
+                        open_ports: [
+                            { port: 22, protocol: 'TCP', service: 'SSH', status: 'Open' },
+                            { port: 80, protocol: 'TCP', service: 'HTTP', status: 'Open' },
+                            { port: 443, protocol: 'TCP', service: 'HTTPS', status: 'Open' },
+                            { port: 5432, protocol: 'TCP', service: 'PostgreSQL', status: 'Open' },
+                            { port: 3306, protocol: 'TCP', service: 'MySQL', status: 'Filtered' }
+                        ]
+                    };
+                    updateNetworkInfo(networkData);
+                });
+            
+            // Simulación de datos de base de datos (se mantiene igual)
+            setTimeout(() => {
+                document.getElementById('db-version').textContent = 'PostgreSQL 14.3';
+                document.getElementById('db-connections').textContent = '12 activas / 100 máx';
+                document.getElementById('db-size').textContent = '4.8 GB';
+                document.getElementById('db-backup').textContent = 'Hoy 04:00 AM';
+                
+                const dbData = [
+                    { name: 'intranet_cbpa', size: '3.2 GB', connections: 8 },
+                    { name: 'sistema_bomberos', size: '1.1 GB', connections: 3 },
+                    { name: 'taller_mecanico', size: '450 MB', connections: 1 }
+                ];
+                
+                const dbTable = document.getElementById('db-list-table').getElementsByTagName('tbody')[0];
+                dbTable.innerHTML = '';
+                
+                dbData.forEach(db => {
+                    const row = dbTable.insertRow();
+                    row.insertCell(0).textContent = db.name;
+                    row.insertCell(1).textContent = db.size;
+                    row.insertCell(2).textContent = db.connections;
+                });
+            }, 2000);
+        }
+        
+        function updateStatusLabels(data) {
+            // Actualizar valores de CPU y memoria en tiempo real
+            const cpuElement = document.querySelector('.crancy-history__number:contains("Uso de CPU")');
+            if (cpuElement) {
+                cpuElement.innerHTML = `${data.cpu_usage}%<span>Uso de CPU</span>`;
+                
+                // Actualizar clases del ícono según valor
+                const iconElement = cpuElement.closest('.crancy-history__content').querySelector('.crancy-history__icon');
+                iconElement.className = `crancy-history__icon ${data.cpu_usage > 80 ? 'crancy-color3__opacity--bg' : data.cpu_usage > 50 ? 'crancy-color2__opacity--bg' : 'crancy-color1__opacity--bg'} me-3`;
+            }
+            
+            const memoryElement = document.querySelector('.crancy-history__number:contains("Uso de Memoria")');
+            if (memoryElement) {
+                memoryElement.innerHTML = `${data.memory_percent}%<span>Uso de Memoria</span>`;
+                
+                // Actualizar clases del ícono según valor
+                const iconElement = memoryElement.closest('.crancy-history__content').querySelector('.crancy-history__icon');
+                iconElement.className = `crancy-history__icon ${data.memory_percent > 80 ? 'crancy-color3__opacity--bg' : data.memory_percent > 50 ? 'crancy-color2__opacity--bg' : 'crancy-color1__opacity--bg'} me-3`;
+            }
+            
+            // Actualizar valores en la tabla de recursos
+            const memoryUsedElement = document.querySelector('td:contains("Memoria Usada")').nextElementSibling;
+            if (memoryUsedElement) {
+                memoryUsedElement.textContent = `${data.memory_used} GB (${data.memory_percent}%)`;
+            }
+            
+            const memoryFreeElement = document.querySelector('td:contains("Memoria Disponible")').nextElementSibling;
+            if (memoryFreeElement) {
+                memoryFreeElement.textContent = `${data.memory_free} GB`;
+            }
+        }
+        
+        function updateDiskInfo(partitions) {
+            const diskTable = document.getElementById('disk-table').getElementsByTagName('tbody')[0];
+            diskTable.innerHTML = '';
+            
+            let totalUsed = 0;
+            let totalAvailable = 0;
+            
+            partitions.forEach(disk => {
+                const row = diskTable.insertRow();
+                row.insertCell(0).textContent = disk.mountpoint || disk.mount;
+                row.insertCell(1).textContent = disk.total;
+                row.insertCell(2).textContent = disk.used;
+                row.insertCell(3).textContent = disk.free || disk.available;
+                
+                const usageCell = row.insertCell(4);
+                const progressDiv = document.createElement('div');
+                progressDiv.className = 'progress';
+                
+                const percent = parseFloat(disk.percent);
+                const progressBar = document.createElement('div');
+                progressBar.className = `progress-bar ${percent > 80 ? 'bg-danger' : percent > 60 ? 'bg-warning' : 'bg-success'}`;
+                progressBar.style.width = `${percent}%`;
+                progressBar.textContent = `${percent}%`;
+                
+                progressDiv.appendChild(progressBar);
+                usageCell.appendChild(progressDiv);
+                
+                // Extraer valores numéricos para calcular totales
+                const usedMatch = (disk.used || '0').match(/(\d+\.?\d*)/);
+                const availableMatch = (disk.free || disk.available || '0').match(/(\d+\.?\d*)/);
+                
+                if (usedMatch && availableMatch) {
+                    totalUsed += parseFloat(usedMatch[1]);
+                    totalAvailable += parseFloat(availableMatch[1]);
+                }
+            });
+            
+            // Actualizar gráfico de disco con totales calculados
+            const diskChart = document.getElementById('diskChart').chart;
+            if (diskChart) {
+                diskChart.data.datasets[0].data = [totalUsed, totalAvailable];
+                diskChart.update();
+            }
+        }
+        
+        function updateNetworkInfo(data) {
+            // Actualizar información de red
+            if (data.interfaces && data.interfaces.length > 0) {
+                document.getElementById('network-mask').textContent = data.interfaces[0].netmask || '255.255.255.0';
+                document.getElementById('network-gateway').textContent = data.interfaces[0].gateway || '10.244.11.1';
+                document.getElementById('network-dns').textContent = '8.8.8.8, 8.8.4.4'; // Normalmente esto vendría del servidor
+            }
+            
+            // Actualizar tabla de puertos
+            if (data.open_ports) {
+                const portsTable = document.getElementById('ports-table').getElementsByTagName('tbody')[0];
+                portsTable.innerHTML = '';
+                
+                data.open_ports.forEach(port => {
+                    const row = portsTable.insertRow();
+                    row.insertCell(0).textContent = port.port;
+                    row.insertCell(1).textContent = port.protocol;
+                    row.insertCell(2).textContent = port.service;
+                    
+                    const statusCell = row.insertCell(3);
+                    const statusBadge = document.createElement('span');
+                    statusBadge.className = `badge ${port.status === 'Open' ? 'bg-success' : 'bg-warning'}`;
+                    statusBadge.textContent = port.status;
+                    statusCell.appendChild(statusBadge);
+                });
+            }
+        }
+        
+        function loadSystemLogsFromAPI() {
+            const logType = document.getElementById('logType').value;
+            const logLevel = document.getElementById('logLevel').value;
+            
+            fetch(`/server-api/logs/?type=${logType}&level=${logLevel}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('logsContent').textContent = data.logs;
+                })
+                .catch(error => {
+                    console.error('Error cargando logs desde API:', error);
+                    // Si falla, mostrar logs simulados
+                    loadSystemLogs();
+                });
+        }
+        
+        function loadSystemLogs() {
+            // Simulación de carga de logs del sistema
+            const sampleLogs = `
+    [2023-04-28 08:15:23] [info] Sistema iniciado correctamente
+    [2023-04-28 08:15:25] [info] Servicio PostgreSQL iniciado
+    [2023-04-28 08:15:26] [info] Servicio Nginx iniciado
+    [2023-04-28 08:15:27] [info] Servicio Django iniciado
+    [2023-04-28 09:30:45] [warning] Uso de memoria superior al 70%
+    [2023-04-28 10:12:34] [info] Backup automático iniciado
+    [2023-04-28 10:15:22] [info] Backup automático completado correctamente
+    [2023-04-28 11:45:12] [error] Error de conexión a la base de datos - reintentando
+    [2023-04-28 11:45:18] [info] Conexión a la base de datos restablecida
+    [2023-04-28 12:30:00] [info] Rotación de logs iniciada
+    [2023-04-28 12:30:05] [info] Rotación de logs completada
+    [2023-04-28 14:22:15] [warning] Intento de acceso fallido desde IP 192.168.1.123
+    [2023-04-28 14:22:45] [warning] Múltiples intentos de acceso fallidos desde IP 192.168.1.123
+    [2023-04-28 14:23:10] [info] IP 192.168.1.123 bloqueada temporalmente
+    [2023-04-28 15:10:22] [info] Actualización de seguridad disponible
+    [2023-04-28 16:45:30] [info] Verificación de integridad del sistema iniciada
+    [2023-04-28 16:48:12] [info] Verificación de integridad del sistema completada - Todo correcto
+            `;
+            
+            document.getElementById('logsContent').textContent = sampleLogs;
+        }
+        
+        // Funciones de utilidad para generar datos aleatorios
+        function generateRandomData(count, baseValue, variation) {
+            return Array(count).fill(0).map(() => randomValue(baseValue, variation));
+        }
+        
+        function randomValue(base, variation) {
+            const min = Math.max(0, base - variation);
+            const max = Math.min(100, base + variation);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        
+        // Función para seleccionar elementos que contienen texto específico
+        // (porque jQuery-like selectors no están disponibles en JavaScript puro)
+        if (!Element.prototype.matches) {
+            Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+        }
+        
+        if (!Element.prototype.closest) {
+            Element.prototype.closest = function(s) {
+                var el = this;
+                do {
+                    if (el.matches(s)) return el;
+                    el = el.parentElement || el.parentNode;
+                } while (el !== null && el.nodeType === 1);
+                return null;
+            };
+        }
+        
+        // Extiende QuerySelector para buscar elementos con texto específico
+        document.querySelectorAll = function(selector) {
+            if (selector.includes(':contains(')) {
+                const searchText = selector.match(/:contains\("?([^"]*)"?\)/)[1];
+                selector = selector.replace(/:contains\("?[^"]*"?\)/, '');
+                
+                const elements = Array.from(document.querySelectorAll(selector || '*'));
+                return elements.filter(el => el.textContent.includes(searchText));
+            } else {
+                return document.querySelectorAll(selector);
+            }
+        };
+    });
+</script>
+{% endblock main_content %}

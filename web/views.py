@@ -564,6 +564,10 @@ User = get_user_model()
 @login_required(login_url='login')
 def server(request):
     boot_time = datetime.fromtimestamp(psutil.boot_time())
+    
+    # Calcular memoria disponible
+    mem = psutil.virtual_memory()
+    free_memory = round(mem.available / (1024 ** 3), 2)
 
     context = {
         "hostname": socket.gethostname(),
@@ -573,13 +577,13 @@ def server(request):
         "os_version": platform.version(),
         "cpu_cores": psutil.cpu_count(logical=True),
         "cpu_usage": psutil.cpu_percent(interval=1),
-        "total_memory": round(psutil.virtual_memory().total / (1024 ** 3), 2),
-        "used_memory": round(psutil.virtual_memory().used / (1024 ** 3), 2),
-        "memory_percent": psutil.virtual_memory().percent,
+        "total_memory": round(mem.total / (1024 ** 3), 2),
+        "used_memory": round(mem.used / (1024 ** 3), 2),
+        "free_memory": free_memory,  # Añadimos memoria disponible
+        "memory_percent": mem.percent,
         "boot_time": boot_time.strftime("%Y-%m-%d %H:%M:%S"),
+        "page_nav_title": "Administración del Servidor"  # Añadimos título para la barra de navegación
     }
-
-    print("Contexto:", context)  # Esto imprimirá los datos en la consola
 
     return render(request, "server/home.html", context)
 
@@ -749,3 +753,110 @@ def remove_firefighter(request, id):
         'page_nav_title': 'Eliminar Bombero'
     }
     return render(request, 'firefighters/delete.html', context)
+
+
+# 
+# views.py (actual que ya tienes, ampliar con estas funciones)
+
+@login_required(login_url='login')
+def server_api_status(request):
+    """API para obtener datos de estado en tiempo real"""
+    data = {
+        "cpu_usage": psutil.cpu_percent(interval=1),
+        "memory_percent": psutil.virtual_memory().percent,
+        "memory_used": round(psutil.virtual_memory().used / (1024 ** 3), 2),
+        "memory_total": round(psutil.virtual_memory().total / (1024 ** 3), 2),
+        "memory_free": round(psutil.virtual_memory().available / (1024 ** 3), 2),
+        "disk_usage": get_disk_usage(),
+        "uptime": get_uptime_seconds()
+    }
+    return JsonResponse(data)
+
+@login_required(login_url='login')
+def server_api_disk(request):
+    """API para obtener información detallada del disco"""
+    partitions = []
+    for part in psutil.disk_partitions(all=False):
+        if os.name == 'nt':
+            if 'cdrom' in part.opts or part.fstype == '':
+                continue
+        usage = psutil.disk_usage(part.mountpoint)
+        partitions.append({
+            "device": part.device,
+            "mountpoint": part.mountpoint,
+            "fstype": part.fstype,
+            "total": bytes_to_gb(usage.total),
+            "used": bytes_to_gb(usage.used),
+            "free": bytes_to_gb(usage.free),
+            "percent": usage.percent
+        })
+    return JsonResponse({"partitions": partitions})
+
+@login_required(login_url='login')
+def server_api_network(request):
+    """API para obtener información de red"""
+    # Esta función requeriría permisos elevados o usar bibliotecas específicas
+    # para obtener información detallada de red
+    # Aquí proporcionamos datos simulados
+    data = {
+        "interfaces": [
+            {
+                "name": "eth0",
+                "ip": socket.gethostbyname(socket.gethostname()),
+                "netmask": "255.255.255.0",
+                "gateway": "10.244.11.1"
+            }
+        ],
+        "open_ports": [
+            {"port": 22, "protocol": "TCP", "service": "SSH", "status": "Open"},
+            {"port": 80, "protocol": "TCP", "service": "HTTP", "status": "Open"},
+            {"port": 443, "protocol": "TCP", "service": "HTTPS", "status": "Open"}
+        ]
+    }
+    return JsonResponse(data)
+
+@login_required(login_url='login')
+def server_api_logs(request):
+    """API para obtener logs del sistema"""
+    log_type = request.GET.get('type', 'system')
+    log_level = request.GET.get('level', 'all')
+    
+    # Aquí deberías implementar la lógica para leer logs reales
+    # Este es un ejemplo simulado
+    logs = []
+    
+    # Simular diferentes tipos de logs
+    if log_type == 'system':
+        log_file = '/var/log/syslog'
+    elif log_type == 'application':
+        log_file = '/var/log/application.log'
+    elif log_type == 'security':
+        log_file = '/var/log/auth.log'
+    else:
+        log_file = f'/var/log/{log_type}.log'
+    
+    # En producción, deberías leer el archivo real
+    logs = f"Logs de {log_type}, nivel {log_level}\nContenido simulado del archivo {log_file}"
+    
+    return JsonResponse({"logs": logs})
+
+# Funciones auxiliares
+def bytes_to_gb(bytes_val):
+    """Convierte bytes a GB con formato"""
+    return f"{bytes_val / (1024**3):.2f} GB"
+
+def get_uptime_seconds():
+    """Retorna el tiempo de actividad en segundos"""
+    return int(time.time() - psutil.boot_time())
+
+def get_disk_usage():
+    """Obtiene el uso promedio de todos los discos"""
+    usages = []
+    for part in psutil.disk_partitions(all=False):
+        if os.name == 'nt':
+            if 'cdrom' in part.opts or part.fstype == '':
+                continue
+        usage = psutil.disk_usage(part.mountpoint)
+        usages.append(usage.percent)
+    
+    return sum(usages) / len(usages) if usages else 0
