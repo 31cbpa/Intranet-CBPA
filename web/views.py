@@ -561,32 +561,6 @@ def detail_parts(request, id):
 
 User = get_user_model()
 
-@login_required(login_url='login')
-def server(request):
-    boot_time = datetime.fromtimestamp(psutil.boot_time())
-    
-    # Calcular memoria disponible
-    mem = psutil.virtual_memory()
-    free_memory = round(mem.available / (1024 ** 3), 2)
-
-    context = {
-        "hostname": socket.gethostname(),
-        "ip_address": socket.gethostbyname(socket.gethostname()),
-        "platform": platform.platform(),
-        "os": platform.system(),
-        "os_version": platform.version(),
-        "cpu_cores": psutil.cpu_count(logical=True),
-        "cpu_usage": psutil.cpu_percent(interval=1),
-        "total_memory": round(mem.total / (1024 ** 3), 2),
-        "used_memory": round(mem.used / (1024 ** 3), 2),
-        "free_memory": free_memory,  # Añadimos memoria disponible
-        "memory_percent": mem.percent,
-        "boot_time": boot_time.strftime("%Y-%m-%d %H:%M:%S"),
-        "page_nav_title": "Administración del Servidor"  # Añadimos título para la barra de navegación
-    }
-
-    return render(request, "server/home.html", context)
-
 # Bomberos
 @role_required(allowed_roles=['Administrador', 'Superintendente', 'Secretario Comandancia', 'Secretario Compañía'])
 @login_required(login_url='login')
@@ -754,11 +728,32 @@ def remove_firefighter(request, id):
     }
     return render(request, 'firefighters/delete.html', context)
 
+# Server Info
+def server(request):
+    boot_time = datetime.fromtimestamp(psutil.boot_time())
+    
+    # Calcular memoria disponible
+    mem = psutil.virtual_memory()
+    free_memory = round(mem.available / (1024 ** 3), 2)
 
-# 
-# views.py (actual que ya tienes, ampliar con estas funciones)
+    context = {
+        "hostname": socket.gethostname(),
+        "ip_address": socket.gethostbyname(socket.gethostname()),
+        "platform": platform.platform(),
+        "os": platform.system(),
+        "os_version": platform.version(),
+        "cpu_cores": psutil.cpu_count(logical=True),
+        "cpu_usage": psutil.cpu_percent(interval=1),
+        "total_memory": round(mem.total / (1024 ** 3), 2),
+        "used_memory": round(mem.used / (1024 ** 3), 2),
+        "free_memory": free_memory,  # Añadimos memoria disponible
+        "memory_percent": mem.percent,
+        "boot_time": boot_time.strftime("%Y-%m-%d %H:%M:%S"),
+        "page_nav_title": "Administración del Servidor"  # Añadimos título para la barra de navegación
+    }
 
-@login_required(login_url='login')
+    return render(request, "server/home.html", context)
+
 def server_api_status(request):
     """API para obtener datos de estado en tiempo real"""
     data = {
@@ -772,7 +767,6 @@ def server_api_status(request):
     }
     return JsonResponse(data)
 
-@login_required(login_url='login')
 def server_api_disk(request):
     """API para obtener información detallada del disco"""
     partitions = []
@@ -792,7 +786,6 @@ def server_api_disk(request):
         })
     return JsonResponse({"partitions": partitions})
 
-@login_required(login_url='login')
 def server_api_network(request):
     """API para obtener información de red"""
     # Esta función requeriría permisos elevados o usar bibliotecas específicas
@@ -815,7 +808,6 @@ def server_api_network(request):
     }
     return JsonResponse(data)
 
-@login_required(login_url='login')
 def server_api_logs(request):
     """API para obtener logs del sistema"""
     log_type = request.GET.get('type', 'system')
@@ -840,7 +832,6 @@ def server_api_logs(request):
     
     return JsonResponse({"logs": logs})
 
-# Funciones auxiliares
 def bytes_to_gb(bytes_val):
     """Convierte bytes a GB con formato"""
     return f"{bytes_val / (1024**3):.2f} GB"
