@@ -15,8 +15,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-z_0fz%^3k-qpra%@f0+d@
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'cbpa-4myhy.ondigitalocean.app,localhost,127.0.0.1').split(',')
-
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'cbpa-4myhy.ondigitalocean.app,intranet.cbpa.cl,localhost,127.0.0.1').split(',')
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
