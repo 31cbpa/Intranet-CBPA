@@ -1,3 +1,11 @@
+import os
+import psutil
+import platform
+import socket
+import sys
+import django
+import datetime
+import time
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
@@ -12,13 +20,12 @@ from django.db.models import Sum
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 from datetime import timedelta, datetime
-import psutil
 import platform
 import socket
 import random
 from .forms import FirefighterForm, EmergencyContactFormSet
 from django.db import transaction
-
+from django.conf import settings
 
 # Auth
 def login_view(request):
@@ -728,126 +735,196 @@ def remove_firefighter(request, id):
     }
     return render(request, 'firefighters/delete.html', context)
 
-# Server Info
+
+# System Info
+
+@login_required(login_url='login')
 def server(request):
+    """
+    Vista que muestra información fidedigna del servidor.
+    Parámetros: Objeto request de Django.
+    Representa la vista principal del panel de administración del servidor.
+    """
+    # Obtener información del entorno
+    
+    is_debug = settings.DEBUG
+    environment = settings.ENVIRONMENT if hasattr(settings, 'ENVIRONMENT') else ('development' if is_debug else 'production')
+    
+    # Información del sistema operativo
     boot_time = datetime.fromtimestamp(psutil.boot_time())
     
-    # Calcular memoria disponible
+    # Información de memoria
     mem = psutil.virtual_memory()
     free_memory = round(mem.available / (1024 ** 3), 2)
+    used_memory = round(mem.used / (1024 ** 3), 2)
+    total_memory = round(mem.total / (1024 ** 3), 2)
+    
+    # Uso de CPU
+    cpu_usage = psutil.cpu_percent(interval=1)
+    
+    # Información de red
+    try:
+        hostname = socket.gethostname()
+        ip_address = socket.gethostbyname(hostname)
+    except:
+        hostname = "No disponible"
+        ip_address = "No disponible"
+    
+    # Información de versiones
+    python_version = platform.python_version()
+    django_version = django.get_version()
 
+    # Información de la base de datos
+    from django.db import connection
+    db_engine = connection.settings_dict['ENGINE'].split('.')[-1]
+    db_name = connection.settings_dict['NAME']
+    
+    # Determinar base de datos actual y versiones
+    if db_engine == 'sqlite3':
+        db_current = 'SQLite 3'
+    elif db_engine == 'postgresql':
+        db_current = 'PostgreSQL'
+    else:
+        db_current = db_engine.capitalize()
+    
+    db_info = {
+        'dev': 'SQLite 3',
+        'prod': 'PostgreSQL 14.3',
+        'current': db_current,
+        'name': db_name
+    }
+    
     context = {
-        "hostname": socket.gethostname(),
-        "ip_address": socket.gethostbyname(socket.gethostname()),
+        # Información del entorno
+        "environment": environment,
+        "is_debug": is_debug,
+        
+        # Información del sistema
+        "hostname": hostname,
+        "ip_address": ip_address,
         "platform": platform.platform(),
         "os": platform.system(),
         "os_version": platform.version(),
         "cpu_cores": psutil.cpu_count(logical=True),
-        "cpu_usage": psutil.cpu_percent(interval=1),
-        "total_memory": round(mem.total / (1024 ** 3), 2),
-        "used_memory": round(mem.used / (1024 ** 3), 2),
-        "free_memory": free_memory,  # Añadimos memoria disponible
+        "cpu_usage": cpu_usage,
+        
+        # Información de memoria
+        "total_memory": total_memory,
+        "used_memory": used_memory,
+        "free_memory": free_memory,
         "memory_percent": mem.percent,
         "boot_time": boot_time.strftime("%Y-%m-%d %H:%M:%S"),
-        "page_nav_title": "Administración del Servidor"  # Añadimos título para la barra de navegación
+        
+        # Información de versiones
+        "python_version": python_version,
+        "django_version": django_version,
+        "db_dev": db_info['dev'],
+        "db_prod": db_info['prod'],
+        "db_current": db_info['current'],
+        "db_name": db_info['name'],
+        
+        # Título para la barra de navegación
+        "page_nav_title": "Administración del Servidor"
     }
 
     return render(request, "server/home.html", context)
 
+
+@login_required(login_url='login')
 def server_api_status(request):
-    """API para obtener datos de estado en tiempo real"""
+    """
+    API para obtener datos de estado en tiempo real.
+    Parámetros: Objeto request de Django.
+    Retorna: Datos de CPU y memoria en formato JSON.
+    """
+    # Obtener datos reales del sistema
+    cpu_usage = psutil.cpu_percent(interval=1)
+    memory = psutil.virtual_memory()
+    
     data = {
-        "cpu_usage": psutil.cpu_percent(interval=1),
-        "memory_percent": psutil.virtual_memory().percent,
-        "memory_used": round(psutil.virtual_memory().used / (1024 ** 3), 2),
-        "memory_total": round(psutil.virtual_memory().total / (1024 ** 3), 2),
-        "memory_free": round(psutil.virtual_memory().available / (1024 ** 3), 2),
-        "disk_usage": get_disk_usage(),
+        "cpu_usage": cpu_usage,
+        "memory_percent": memory.percent,
+        "memory_used": round(memory.used / (1024 ** 3), 2),
+        "memory_total": round(memory.total / (1024 ** 3), 2),
+        "memory_free": round(memory.available / (1024 ** 3), 2),
         "uptime": get_uptime_seconds()
     }
     return JsonResponse(data)
 
-def server_api_disk(request):
-    """API para obtener información detallada del disco"""
-    partitions = []
-    for part in psutil.disk_partitions(all=False):
-        if os.name == 'nt':
-            if 'cdrom' in part.opts or part.fstype == '':
-                continue
-        usage = psutil.disk_usage(part.mountpoint)
-        partitions.append({
-            "device": part.device,
-            "mountpoint": part.mountpoint,
-            "fstype": part.fstype,
-            "total": bytes_to_gb(usage.total),
-            "used": bytes_to_gb(usage.used),
-            "free": bytes_to_gb(usage.free),
-            "percent": usage.percent
-        })
-    return JsonResponse({"partitions": partitions})
 
+@login_required(login_url='login')
 def server_api_network(request):
-    """API para obtener información de red"""
-    # Esta función requeriría permisos elevados o usar bibliotecas específicas
-    # para obtener información detallada de red
-    # Aquí proporcionamos datos simulados
-    data = {
-        "interfaces": [
-            {
-                "name": "eth0",
-                "ip": socket.gethostbyname(socket.gethostname()),
-                "netmask": "255.255.255.0",
-                "gateway": "10.244.11.1"
-            }
-        ],
-        "open_ports": [
-            {"port": 22, "protocol": "TCP", "service": "SSH", "status": "Open"},
-            {"port": 80, "protocol": "TCP", "service": "HTTP", "status": "Open"},
-            {"port": 443, "protocol": "TCP", "service": "HTTPS", "status": "Open"}
-        ]
-    }
+    """
+    API para obtener información de red.
+    Parámetros: Objeto request de Django.
+    Retorna: Datos de red en formato JSON.
+    """
+    try:
+        # Intentar obtener información de red real
+        hostname = socket.gethostname()
+        ip_address = socket.gethostbyname(hostname)
+        
+        data = {
+            "interfaces": [
+                {
+                    "name": "eth0",
+                    "ip": ip_address,
+                    "hostname": hostname
+                }
+            ]
+        }
+    except Exception as e:
+        # Si hay algún error, mostrar mensaje de error
+        data = {
+            "error": f"No se pudo obtener información de red: {str(e)}"
+        }
+    
     return JsonResponse(data)
 
-def server_api_logs(request):
-    """API para obtener logs del sistema"""
-    log_type = request.GET.get('type', 'system')
-    log_level = request.GET.get('level', 'all')
-    
-    # Aquí deberías implementar la lógica para leer logs reales
-    # Este es un ejemplo simulado
-    logs = []
-    
-    # Simular diferentes tipos de logs
-    if log_type == 'system':
-        log_file = '/var/log/syslog'
-    elif log_type == 'application':
-        log_file = '/var/log/application.log'
-    elif log_type == 'security':
-        log_file = '/var/log/auth.log'
-    else:
-        log_file = f'/var/log/{log_type}.log'
-    
-    # En producción, deberías leer el archivo real
-    logs = f"Logs de {log_type}, nivel {log_level}\nContenido simulado del archivo {log_file}"
-    
-    return JsonResponse({"logs": logs})
 
-def bytes_to_gb(bytes_val):
-    """Convierte bytes a GB con formato"""
-    return f"{bytes_val / (1024**3):.2f} GB"
+@login_required(login_url='login')
+def server_api_db_info(request):
+    """
+    API para obtener información de la base de datos.
+    Parámetros: Objeto request de Django.
+    Retorna: Información de la base de datos en formato JSON.
+    """
+    try:
+        # Obtener información real de la base de datos
+        from django.db import connection
+        
+        db_info = {
+            'engine': connection.settings_dict['ENGINE'].split('.')[-1],
+            'name': connection.settings_dict['NAME'],
+            'user': connection.settings_dict.get('USER', 'No definido'),
+            'host': connection.settings_dict.get('HOST', 'localhost'),
+            'port': connection.settings_dict.get('PORT', 'Predeterminado'),
+        }
+        
+        # Obtener estadísticas de conexión si es posible
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute("SELECT version();")
+                version = cursor.fetchone()[0]
+                db_info['version'] = version
+            except:
+                db_info['version'] = "No disponible"
+        
+        return JsonResponse({
+            "database": db_info,
+            "status": "online"
+        })
+    
+    except Exception as e:
+        return JsonResponse({
+            "error": f"No se pudo conectar a la base de datos: {str(e)}",
+            "status": "offline"
+        })
+
 
 def get_uptime_seconds():
-    """Retorna el tiempo de actividad en segundos"""
+    """
+    Calcula el tiempo que el servidor lleva en funcionamiento.
+    Retorna: Tiempo en segundos desde el arranque del sistema.
+    """
     return int(time.time() - psutil.boot_time())
-
-def get_disk_usage():
-    """Obtiene el uso promedio de todos los discos"""
-    usages = []
-    for part in psutil.disk_partitions(all=False):
-        if os.name == 'nt':
-            if 'cdrom' in part.opts or part.fstype == '':
-                continue
-        usage = psutil.disk_usage(part.mountpoint)
-        usages.append(usage.percent)
-    
-    return sum(usages) / len(usages) if usages else 0

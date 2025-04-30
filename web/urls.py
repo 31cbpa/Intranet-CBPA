@@ -48,12 +48,12 @@ urlpatterns = [
     path('parts/create/<int:repair_id>/', create_parts, name='create_parts'),
     path('parts/<int:id>/', detail_parts, name='detail_parts'),
     
-    # Admin
+    # Server Admin - APIs
     path('server/', server, name='server'),
+    
     path('server-api/status/', server_api_status, name='server_api_status'),
-    path('server-api/disk/', server_api_disk, name='server_api_disk'),
     path('server-api/network/', server_api_network, name='server_api_network'),
-    path('server-api/logs/', server_api_logs, name='server_api_logs'),
+    path('server-api/db-info/', server_api_db_info, name='server_api_db_info'),
 
     # Firefighters
     path('firefighters/', list_firefighters, name='list_firefighters'),
