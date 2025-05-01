@@ -7,13 +7,9 @@ import sys
 from pathlib import Path
 import dj_database_url
 
-# Forzar modo desarrollo si estamos usando runserver
-if len(sys.argv) > 1 and sys.argv[1] == 'runserver':
-    ENVIRONMENT = 'development'
-    print("MODO DE DESARROLLO FORZADO - HTTPS DESACTIVADO")
-else:
-    # Detectar si estamos en producción o desarrollo
-    ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')  # Por defecto, 'development'
+# Detectar entorno desde variable de entorno
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
+print(f"ENTORNO DETECTADO: {ENVIRONMENT}")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -145,6 +141,5 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 DIGITALOCEAN_API_TOKEN = os.environ.get('DIGITALOCEAN_API_TOKEN', '')
