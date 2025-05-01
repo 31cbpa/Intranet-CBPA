@@ -1,10 +1,70 @@
+# Entornos virtuales
 venv/
-*.pyc
-db.sqlite3
-media/
-staticfiles/
-__pycache__/
-*.log
-*.pot
-*.mo
+env/
+*.env
 .env
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Bases de datos de desarrollo
+*.sqlite3
+db.sqlite3
+
+# Archivos de configuración de IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de log
+*.log
+
+# Archivos de compilación y distribución
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Archivos de media y estáticos en producción
+staticfiles/
+media/
+
+# Archivos de configuración y secretos
+*.key
+*.pem
+*.crt
+*.csr
+
+# Dependencias y paquetes
+node_modules/
+*.npm
+package-lock.json
+
+# Archivos de migración (opcional, depende de tu política de proyecto)
+# migrations/
+
+# Archivos de configuración de entorno local
+local_settings.py
+
+# Backups
+*.bak
+*.backup
+
+# Archivos temporales
+*.tmp
+*~
+
+# Archivos de coverage y testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Configuraciones específicas de proyecto
+config/local.py

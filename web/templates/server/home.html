@@ -131,10 +131,13 @@
                             {% if is_debug %}
                             <span class="badge bg-primary p-2 ms-2">DEBUG</span>
                             {% endif %}
-                            <span class="badge {% if environment == 'production' %}bg-success{% else %}bg-danger{% endif %} p-2">
+                            <span class="badge {% if environment == 'production' %}bg-success{% else %}bg-primary{% endif %} p-2">
                                 {{ environment|title }}
                             </span>
                         </h3>
+                        <p class="text-muted mt-2">
+                            Base de datos actual: <strong>{{ db_current }}</strong> ({{ db_name }})
+                        </p>
                     </div>
                     <div>
                         <p class="mb-0"><strong>Modo de ejecución:</strong> 
@@ -222,7 +225,7 @@
                                     <div class="progress">
                                         <div class="progress-bar {% if cpu_usage > 80 %}bg-danger{% elif cpu_usage > 50 %}bg-warning{% else %}bg-success{% endif %}" 
                                              role="progressbar" 
-                                             style="width: {{ cpu_usage }}%"
+                                             style="width: '{{ cpu_usage|default_if_none:0 }}%'"
                                              aria-valuenow="{{ cpu_usage }}" 
                                              aria-valuemin="0" 
                                              aria-valuemax="100">
@@ -236,8 +239,8 @@
                                 <td>
                                     <div class="progress">
                                         <div class="progress-bar {% if memory_percent > 80 %}bg-danger{% elif memory_percent > 50 %}bg-warning{% else %}bg-success{% endif %}" 
-                                             role="progressbar" 
-                                             style="width: {{ memory_percent }}%"
+                                             role="progressbar"
+                                             style="width: '{{ memory_percent|default_if_none:0 }}%'"
                                              aria-valuenow="{{ memory_percent }}" 
                                              aria-valuemin="0" 
                                              aria-valuemax="100">
@@ -402,7 +405,7 @@
                     labels: Array(30).fill('').map((_, i) => `-${30-i} sec`),
                     datasets: [{
                         label: 'Uso de CPU (%)',
-                        data: Array(30).fill({{ cpu_usage }}),
+                        data: Array(30).fill("{{ cpu_usage }}"),
                         backgroundColor: 'rgba(52, 152, 219, 0.2)',
                         borderColor: 'rgba(52, 152, 219, 1)',
                         borderWidth: 2,
@@ -445,7 +448,7 @@
                     labels: Array(30).fill('').map((_, i) => `-${30-i} sec`),
                     datasets: [{
                         label: 'Uso de Memoria (%)',
-                        data: Array(30).fill({{ memory_percent }}),
+                        data: Array(30).fill("{{ memory_percent }}"),
                         backgroundColor: 'rgba(46, 204, 113, 0.2)',
                         borderColor: 'rgba(46, 204, 113, 1)',
                         borderWidth: 2,
