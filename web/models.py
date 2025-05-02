@@ -120,6 +120,8 @@ class Repair(models.Model):
     duration = models.IntegerField(null=True, blank=True)
     comments = models.TextField(blank=True, null=True)
     rejection_reason = models.TextField(blank=True, null=True)
+    # nueva implementación
+    approval_message = models.TextField(blank=True, null=True)
     
     def __str__(self):
         return self.title

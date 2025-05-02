@@ -23,7 +23,7 @@
         </a>
         {% else %}
         <td class="crancy-table__column-4 crancy-table__data-4">
-            <span class="crancy-table__product-title badge mb-4 {% if repair.status == 'Pendiente' %}bg-warning{% elif repair.status == 'Finalizada' %}bg-success{% elif repair.status == 'En progreso' %}bg-info{% elif repair.status == 'Sin comenzar' %}bg-secondary{% endif %}">
+            <span class="crancy-table__product-title badge mb-4 {% if repair.status == 'Pendiente' %}bg-warning{% elif repair.status == 'Finalizada' %}bg-success{% elif repair.status == 'En progreso' %}bg-info{% elif repair.status == 'Sin comenzar' %}bg-secondary{% elif repair.status == 'Rechazada' %}bg-danger{% endif %}">
                 {{ repair.status }}
             </span>
         </td>
@@ -47,6 +47,35 @@
         {% endfor %}
     </div>
 </div>
+{% endif %}
+
+{% comment %} Mensaje de estado de la reparación {% endcomment %}
+{% if repair.status != 'Pendiente' %}
+    <div class="row">
+        <div class="col-12">
+            {% if repair.status == 'Rechazada' and repair.rejection_reason %}
+                <div class="alert alert-danger d-flex align-items-center mt-4">
+                    <div class="d-flex align-items-center me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1 text-danger fw-bold">Solicitud Rechazada</h5>
+                        <p class="mb-0">{{ repair.rejection_reason }}</p>
+                    </div>
+                </div>
+            {% elif repair.status != 'Rechazada' and repair.approval_message %}
+                <div class="alert alert-success d-flex align-items-center mt-4">
+                    <div class="d-flex align-items-center me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24"><path fill="currentColor" d="m9 20.42l-6.21-6.21l2.83-2.83L9 14.77l9.88-9.89l2.83 2.83z"/></svg>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1 text-success fw-bold">Solicitud Aprobada</h5>
+                        <p class="mb-0">{{ repair.approval_message }}</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endif %}
 
 {% comment %} Repair detail {% endcomment %}
@@ -156,7 +185,10 @@
                 <div class="d-flex align-items-center justify-content-end mt-5">
 
                     {% if user|has_group:"Comandante" and repair.status == 'Pendiente' %}
-                        <a href="{% url "approve_repair" repair.id %}" class="d-flex justify-content-center align-items-center px-3 btn badge bg-danger me-3" >Rechazar reparación</a>
+                        <a href="{% url "reject_repair" repair.id %}" class="d-flex justify-content-center align-items-center px-3 btn badge bg-danger me-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="me-1" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"/></svg>
+                            Rechazar reparación
+                        </a>
 
                         <a href="{% url "approve_repair" repair.id %}" class="d-flex justify-content-center align-items-center px-3 btn badge bg-success" type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" class="me-1" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m9 20.42l-6.21-6.21l2.83-2.83L9 14.77l9.88-9.89l2.83 2.83z"/></svg>

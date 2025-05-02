@@ -38,6 +38,7 @@ urlpatterns = [
     path('repairs/', list_repairs, name='list_repairs'),
     path('repairs/pending/', list_pending_repairs, name='list_pending_repairs'),
     path('repairs/approve/<int:id>/', approve_repair, name='approve_repair'),
+    path('repairs/reject/<int:id>/', reject_repair, name='reject_repair'),  # Nueva URL para rechazar
     path('repairs/<int:id>/', detail_repair, name='detail_repair'),
     path('repairs/create/<int:vehicle_id>/', create_repair, name='create_repair'),
     path('repairs/remove/<int:id>/', remove_repair, name='remove_repair'),

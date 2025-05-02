@@ -1,0 +1,110 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block page_title %}Aprobar Reparación{% endblock page_title %}
+
+{% block main_content %}
+
+{% comment %} Page title {% endcomment %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-between mg-top-30">
+        <div class="crancy-pbreadcrumb">
+            <h2 class="mb-3">
+                Aprobar Reparación #REP-{{ repair.id }}
+            </h2>
+        </div>
+    </div>
+</div>
+
+{% comment %} Alerts {% endcomment %}
+{% if messages %}
+<div class="row">
+    <div class="col-12">
+        {% for message in messages %}
+        {% comment %} Extra tags {% endcomment %}
+            <div class="alert {{ message.tags }} d-flex align-items-center mt-5" role="alert">
+                <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17q.425 0 .713-.288T13 16t-.288-.712T12 15t-.712.288T11 16t.288.713T12 17m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/></svg>
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% comment %} Approval form {% endcomment %}
+<div class="row">
+    <div class="col-12">
+        <form method="POST">
+        {% csrf_token %}
+
+            {% comment %} Data Form {% endcomment %}
+            <div class="crancy__item-group p-5">
+
+                <div class="text-dark d-flex justify-content-start align-items-start mb-3">
+                    <svg class="text-info me-3" xmlns="http://www.w3.org/2000/svg" width="4em" height="4em" viewBox="0 0 24 24"><path fill="currentColor" d="M11 17h2v-6h-2zm1-8q.425 0 .713-.288T13 8t-.288-.712T12 7t-.712.288T11 8t.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"/></svg>
+                    Estás a punto de aprobar esta solicitud de reparación. Una vez aprobada, el equipo de taller mecánico podrá comenzar a trabajar en ella. Puedes agregar instrucciones adicionales para el mecánico.
+                </div>
+
+                <hr class="mb-5 mt-4">
+
+                {% comment %} General data {% endcomment %}
+                <div class="crancy__item-form--group">
+                    <div class="row">
+                        
+                        {% comment %} Title {% endcomment %}
+                        <div class="col-lg-12 col-12">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Reparación</label>
+                                <input class="crancy__item-input" type="text"
+                                    value="{{ repair.title }}" disabled>
+                            </div>
+                        </div>
+
+                        {% comment %} Vehicle {% endcomment %}
+                        <div class="col-lg-12 col-12 mt-4">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Vehículo</label>
+                                <input class="crancy__item-input" type="text"
+                                    value="{{ repair.vehicle.license_plate }}" disabled>
+                            </div>
+                        </div>
+
+                        {% comment %} Comments {% endcomment %}
+                        <div class="col-lg-12 col-12 mt-4">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Observaciones / comentarios originales</label>
+                                <textarea class="form-control" rows="3" disabled>{{ repair.comments }}</textarea>
+                            </div>
+                        </div>
+
+                        {% comment %} Approval message {% endcomment %}
+                        <div class="col-lg-12 col-12 mt-4">
+                            <div class="crancy__item-form--group">
+                                <label class="crancy__item-label">Mensaje de aprobación</label>
+                                <textarea class="form-control" rows="5" name="txtApprovalMessage" id="txtApprovalMessage" placeholder="Ingrese instrucciones o comentarios adicionales para el mecánico"></textarea>
+                                <small class="text-muted">Este mensaje será visible para el mecánico cuando inicie la reparación.</small>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {% comment %} Buttons {% endcomment %}
+                <div class="d-flex align-items-center justify-content-end mt-5">
+                    <a href="{% url 'detail_repair' repair.id %}" class="d-flex justify-content-center align-items-center px-3 btn badge bg-danger me-3">Cancelar</a>
+    
+                    <button class="d-flex justify-content-center align-items-center px-3 btn badge bg-success" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="me-1" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m9 20.42l-6.21-6.21l2.83-2.83L9 14.77l9.88-9.89l2.83 2.83z"/></svg>
+                        Confirmar aprobación
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock main_content %}

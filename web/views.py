@@ -412,13 +412,82 @@ def list_pending_repairs(request):
 @role_required(allowed_roles=['Administrador', 'Comandante'])
 @login_required(login_url='login')
 def approve_repair(request, id):
-
+    """
+    Función para aprobar una solicitud de reparación.
+    Parámetros:
+    - request: Objeto request de Django.
+    - id: Identificador de la reparación a aprobar.
+    Representa el paso donde el comandante aprueba una reparación pendiente y añade un mensaje opcional.
+    """
     repair = Repair.objects.get(id=id)
-    repair.status = 'Sin comenzar'
-    repair.save()
+    
+    # Si la reparación no está pendiente, redirigir
+    if repair.status != 'Pendiente':
+        messages.warning(request, 'Esta reparación no está pendiente de aprobación.', extra_tags='alert-warning')
+        return redirect('list_repairs')
+    
+    if request.method == 'POST':
+        # Obtener el mensaje de aprobación (puede ser vacío)
+        approval_message = request.POST.get('txtApprovalMessage', '')
+        
+        # Actualizar la reparación
+        repair.approval_message = approval_message
+        repair.status = 'Sin comenzar'
+        repair.save()
+        
+        messages.success(request, '¡Reparación aprobada correctamente! Ahora puede ser iniciada por un mecánico.', extra_tags='alert-success')
+        return redirect('list_repairs')
+    
+    context = {
+        'repair': repair,
+        'page_nav_title': 'Aprobar Reparación #REP-' + str(repair.id)
+    }
+    return render(request, 'repairs/approve.html', context)
 
-    messages.success(request, '¡Reparación aprobada correctamente! Ahora puede ser iniciada por un mecánico y trabajar en ella.', extra_tags='alert-success')
-    return redirect('list_repairs')
+@role_required(allowed_roles=['Administrador', 'Comandante'])
+@login_required(login_url='login')
+def reject_repair(request, id):
+    """
+    Función para rechazar una solicitud de reparación.
+    Parámetros:
+    - request: Objeto request de Django.
+    - id: Identificador de la reparación a rechazar.
+    Representa el paso donde el comandante rechaza una reparación pendiente y añade un motivo obligatorio.
+    """
+    repair = Repair.objects.get(id=id)
+    
+    # Si la reparación no está pendiente, redirigir
+    if repair.status != 'Pendiente':
+        messages.warning(request, 'Esta reparación no está pendiente de aprobación.', extra_tags='alert-warning')
+        return redirect('list_repairs')
+    
+    if request.method == 'POST':
+        # Obtener el motivo de rechazo
+        rejection_reason = request.POST.get('txtRejectionReason', '')
+        
+        # Validar que se ingresó un motivo
+        if not rejection_reason:
+            messages.error(request, 'Debe ingresar un motivo de rechazo.', extra_tags='alert-danger')
+            context = {
+                'repair': repair,
+                'page_nav_title': 'Rechazar Reparación #REP-' + str(repair.id),
+                'error': True
+            }
+            return render(request, 'repairs/reject.html', context)
+        
+        # Actualizar la reparación
+        repair.rejection_reason = rejection_reason
+        repair.status = 'Rechazada'
+        repair.save()
+        
+        messages.success(request, '¡Reparación rechazada correctamente!', extra_tags='alert-success')
+        return redirect('list_repairs')
+    
+    context = {
+        'repair': repair,
+        'page_nav_title': 'Rechazar Reparación #REP-' + str(repair.id)
+    }
+    return render(request, 'repairs/reject.html', context)
 
 @role_required(allowed_roles=['Administrador', 'Comandante', 'Mecánico'])
 @login_required(login_url='login')
